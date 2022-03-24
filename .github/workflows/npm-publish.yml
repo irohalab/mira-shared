@@ -22,7 +22,7 @@ jobs:
 #          AMQP_URL: ${{secrets.AMQP_URL}}
 
   publish-gpr:
-    needs: build
+#    needs: build
     runs-on: ubuntu-latest
     permissions:
       contents: read
