@@ -1,6 +1,6 @@
 {
    "name": "@irohalab/mira-shared",
-   "version": "0.1.6",
+   "version": "0.1.7",
    "description": "Shared components for mira projects",
    "main": "src/index.ts",
    "repository": {
@@ -54,5 +54,9 @@
          "ts-node/register"
       ],
       "verbose": true
+   },
+   "publishConfig": {
+      "access": "public",
+      "registry": "https://registry.npmjs.org/"
    }
 }
