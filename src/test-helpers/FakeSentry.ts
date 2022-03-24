@@ -21,4 +21,7 @@ import { injectable } from 'inversify';
 export class FakeSentry implements Sentry {
     public capture(obj: any, context?: { [p: string]: string }): void {
     }
+
+    public setup(serverName: string): void {
+    }
 }
