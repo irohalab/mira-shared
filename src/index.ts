@@ -17,13 +17,22 @@
 export * from './services/RabbitMQService';
 export * from './services/BaseDatabaseService';
 export * from './services/BasicDatabaseServiceImpl';
+/**
+ * Messages and other pojo class
+ */
 export * from './domain/DownloadMQMessage';
+export * from './domain/VideoManagerMessage';
 export * from './domain/MQMessage';
 export * from './domain/RemoteFile';
+
 export * from './entity/Message';
+
 export * from './exceptions/TokenCheckException';
 export * from './exceptions/NotImplementException';
+
 export * from './repository/MessageRepository';
+
 export * from './utils/BaseConfigManager';
 export * from './utils/Sentry';
+
 export * from './TYPES';

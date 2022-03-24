@@ -14,24 +14,16 @@
  * limitations under the License.
  */
 
-export const TYPES = {
-    ConfigManager: Symbol.for('ConfigManager'),
-    DatabaseService: Symbol.for('DatabaseService'),
-    Sentry: Symbol.for('Sentry')
-};
+import { MQMessage } from './MQMessage';
+import { RemoteFile } from './RemoteFile';
 
-export const DOWNLOAD_MESSAGE_EXCHANGE = 'download_message';
-export const VIDEO_MANAGER_EXCHANGE = 'video_manager';
-export const CORE_TASK_EXCHANGE = 'core_task';
-
-/**
- * Queues
- */
-export const VIDEO_MANAGER_QUEUE = 'video_manager_queue';
-export const DOWNLOAD_TASK_QUEUE = 'download_task_queue';
-
-/**
- * Binding Keys
- */
-export const VIDEO_MANAGER_GENERAL = 'general';
-export const DOWNLOAD_TASK = 'download_task';
+export class VideoManagerMessage implements MQMessage {
+    public id: string;
+    public isProcessed: boolean; // if there is no rule match, this is false
+    public processedFile: RemoteFile; // can be null
+    public jobExecutorId: string;
+    public bangumiId: string;
+    public videoId: string;
+    public version: string;
+    public downloadTaskId: string;
+}
