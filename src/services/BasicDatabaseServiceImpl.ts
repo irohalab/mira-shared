@@ -31,10 +31,10 @@ const logger = pino();
 
 @injectable()
 export class BasicDatabaseServiceImpl implements BaseDatabaseService {
-    private _connection: Connection;
-    private _retryCount: number = 0;
+    protected _connection: Connection;
+    protected _retryCount: number = 0;
 
-    constructor(@inject(TYPES.ConfigManager) private _configManager: BaseConfigManager) {
+    constructor(@inject(TYPES.ConfigManager) protected _configManager: BaseConfigManager) {
     }
 
     public async start(): Promise<void> {
