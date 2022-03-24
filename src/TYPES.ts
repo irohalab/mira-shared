@@ -14,12 +14,19 @@
  * limitations under the License.
  */
 
+/**
+ * DI tokens
+ */
 export const TYPES = {
     ConfigManager: Symbol.for('ConfigManager'),
     DatabaseService: Symbol.for('DatabaseService'),
     Sentry: Symbol.for('Sentry')
 };
 
+/**
+ * Exchanges
+ */
+export const JOB_EXCHANGE = 'video_job'; // for video manager job
 export const DOWNLOAD_MESSAGE_EXCHANGE = 'download_message';
 export const VIDEO_MANAGER_EXCHANGE = 'video_manager';
 export const CORE_TASK_EXCHANGE = 'core_task';
@@ -27,11 +34,15 @@ export const CORE_TASK_EXCHANGE = 'core_task';
 /**
  * Queues
  */
+export const JOB_QUEUE = 'job_queue'; // for video manager job
+export const DOWNLOAD_MESSAGE_QUEUE = 'download_message_queue';
 export const VIDEO_MANAGER_QUEUE = 'video_manager_queue';
 export const DOWNLOAD_TASK_QUEUE = 'download_task_queue';
+export const COMMAND_QUEUE = 'command_queue';
 
 /**
  * Binding Keys
  */
 export const VIDEO_MANAGER_GENERAL = 'general';
 export const DOWNLOAD_TASK = 'download_task';
+export const VIDEO_MANAGER_COMMAND = 'command';
