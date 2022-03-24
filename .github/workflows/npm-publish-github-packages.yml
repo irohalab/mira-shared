@@ -33,6 +33,7 @@ jobs:
         with:
           node-version: 16
           registry-url: https://npm.pkg.github.com/
+          scope: '@irohalab'
       - run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
