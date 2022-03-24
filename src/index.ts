@@ -15,8 +15,8 @@
  */
 
 export * from './services/RabbitMQService';
-export * from './services/DatabaseService';
-export * from './services/BasicDatabaseService';
+export * from './services/BaseDatabaseService';
+export * from './services/BasicDatabaseServiceImpl';
 export * from './domain/DownloadMQMessage';
 export * from './domain/MQMessage';
 export * from './domain/RemoteFile';
@@ -24,6 +24,6 @@ export * from './entity/Message';
 export * from './exceptions/TokenCheckException';
 export * from './exceptions/NotImplementException';
 export * from './repository/MessageRepository';
-export * from './utils/ConfigManager';
-export * from './utils/sentry';
+export * from './utils/BaseConfigManager';
+export * from './utils/Sentry';
 export * from './TYPES';

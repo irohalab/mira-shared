@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-import { ConfigManager } from "../utils/ConfigManager";
+import { BaseConfigManager } from "../utils/BaseConfigManager";
 import { ConfirmChannel, connect, Connection } from 'amqplib';
 import { inject, injectable } from 'inversify';
 import { Buffer } from 'buffer';
 import { MQMessage } from '../domain/MQMessage';
-import { DatabaseService } from './DatabaseService';
+import { BaseDatabaseService } from './BaseDatabaseService';
 import { Message } from '../entity/Message';
 import { TYPES } from '../TYPES';
 import pino from 'pino';
-import { Sentry } from '../utils/sentry';
+import { Sentry } from '../utils/Sentry';
 import { isFatalError } from 'amqplib/lib/connection';
 
 const logger = pino();
@@ -50,8 +50,8 @@ export class RabbitMQService {
     private _consumers = new Map<string, Consumer>();
     private _connected: boolean;
 
-    constructor(@inject(TYPES.ConfigManager) private _configManager: ConfigManager,
-                @inject(TYPES.DatabaseService) private _databaseService: DatabaseService,
+    constructor(@inject(TYPES.ConfigManager) private _configManager: BaseConfigManager,
+                @inject(TYPES.DatabaseService) private _databaseService: BaseDatabaseService,
                 @inject(TYPES.Sentry) private _sentry: Sentry) {
     }
 

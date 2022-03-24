@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-import { ConfigManager } from '../utils/ConfigManager';
+import { BaseConfigManager } from '../utils/BaseConfigManager';
 import { Options } from 'amqplib';
 import { injectable } from 'inversify';
 import { NotImplementException } from '../exceptions/NotImplementException';
 
 @injectable()
-export class FakeConfigManager implements ConfigManager {
+export class FakeConfigManager implements BaseConfigManager {
     amqpConfig(): Options.Connect {
         const host = 'localhost';
         const port = 5672;

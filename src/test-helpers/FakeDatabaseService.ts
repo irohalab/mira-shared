@@ -16,11 +16,11 @@
 
 
 import { injectable } from 'inversify';
-import { DatabaseService } from '../services/DatabaseService';
+import { BaseDatabaseService } from '../services/BaseDatabaseService';
 import { FakeMessageRepository } from './FakeMessageRepository';
 
 @injectable()
-export class FakeDatabaseService implements DatabaseService {
+export class FakeDatabaseService implements BaseDatabaseService {
 
     getMessageRepository(): FakeMessageRepository {
         return undefined;

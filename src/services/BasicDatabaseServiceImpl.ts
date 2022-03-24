@@ -17,8 +17,8 @@
 import { inject, injectable } from "inversify";
 import { Connection, createConnection, getCustomRepository } from "typeorm";
 import { MessageRepository } from '../repository/MessageRepository';
-import { DatabaseService } from './DatabaseService';
-import { ConfigManager } from '../utils/ConfigManager';
+import { BaseDatabaseService } from './BaseDatabaseService';
+import { BaseConfigManager } from '../utils/BaseConfigManager';
 import { TYPES } from '../TYPES';
 import { promisify } from 'util';
 import pino from 'pino';
@@ -30,11 +30,11 @@ const sleep = promisify(setTimeout);
 const logger = pino();
 
 @injectable()
-export class BasicDatabaseService implements DatabaseService {
+export class BasicDatabaseServiceImpl implements BaseDatabaseService {
     private _connection: Connection;
     private _retryCount: number = 0;
 
-    constructor(@inject(TYPES.ConfigManager) private _configManager: ConfigManager) {
+    constructor(@inject(TYPES.ConfigManager) private _configManager: BaseConfigManager) {
     }
 
     public async start(): Promise<void> {

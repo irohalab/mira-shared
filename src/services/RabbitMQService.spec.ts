@@ -17,10 +17,10 @@
 import test from 'ava';
 import { Container } from 'inversify';
 import { RabbitMQService } from './RabbitMQService';
-import { ConfigManager } from '../utils/ConfigManager';
+import { BaseConfigManager } from '../utils/BaseConfigManager';
 import { TYPES } from '../TYPES';
 import { FakeConfigManager } from '../test-helpers/FakeConfigManager';
-import { DatabaseService } from './DatabaseService';
+import { BaseDatabaseService } from './BaseDatabaseService';
 import { FakeDatabaseService } from '../test-helpers/FakeDatabaseService';
 import { DownloadMQMessage } from '../domain/DownloadMQMessage';
 import { v4 as uuid4 } from 'uuid';
@@ -35,8 +35,8 @@ class JobMessage {
 
 test.beforeEach( async (t) => {
     const container = new Container({ autoBindInjectable: true });
-    container.bind<ConfigManager>(TYPES.ConfigManager).to(FakeConfigManager);
-    container.bind<DatabaseService>(TYPES.DatabaseService).to(FakeDatabaseService);
+    container.bind<BaseConfigManager>(TYPES.ConfigManager).to(FakeConfigManager);
+    container.bind<BaseDatabaseService>(TYPES.DatabaseService).to(FakeDatabaseService);
     container.bind<FakeSentry>(TYPES.Sentry).to(FakeSentry);
     rabbitMQService = container.get<RabbitMQService>(RabbitMQService);
 });

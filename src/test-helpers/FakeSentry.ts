@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Sentry } from '../utils/sentry';
+import { Sentry } from '../utils/Sentry';
 import { injectable } from 'inversify';
 
 @injectable()

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 IROHA LAB
+ * Copyright 2021 IROHA LAB
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-import { Options } from 'amqplib';
-import { ConnectionOptions } from 'typeorm';
+import { MessageRepository } from '../repository/MessageRepository';
 
-export interface ConfigManager {
-    amqpConfig(): Options.Connect;
-    amqpServerUrl(): string;
-    databaseConnectionConfig(): ConnectionOptions;
+export interface BaseDatabaseService {
+    start(): Promise<void>;
+    stop(): Promise<void>;
+    getMessageRepository(): MessageRepository;
 }
