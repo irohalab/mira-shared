@@ -15,6 +15,6 @@
  */
 
 export interface Sentry {
-    setup(serverName: string): void;
+    setup(serverName: string, appName: string, version: string): void;
     capture(obj: any, context?: {[key: string]: string}): void;
 }
