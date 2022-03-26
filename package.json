@@ -17,7 +17,7 @@
    "author": "Everett Summer",
    "license": "Apache-2.0",
    "dependencies": {
-      "@sentry/node": "^6.16.1",
+      "@sentry/node": "^6.19.2",
       "amqplib": "^0.7.1",
       "inversify": "^5.0.5",
       "inversify-binding-decorators": "^4.0.0",
