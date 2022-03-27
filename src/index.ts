@@ -35,5 +35,6 @@ export * from './repository/MessageRepository';
 export * from './utils/BaseConfigManager';
 export * from './utils/Sentry';
 export * from './utils/SentryImpl';
+export * from './utils/ResponseWrapper';
 
 export * from './TYPES';
