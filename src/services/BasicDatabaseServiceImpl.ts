@@ -15,13 +15,15 @@
  */
 
 import { inject, injectable } from "inversify";
-import { Connection, createConnection, getCustomRepository } from "typeorm";
 import { MessageRepository } from '../repository/MessageRepository';
 import { BaseDatabaseService } from './BaseDatabaseService';
 import { BaseConfigManager } from '../utils/BaseConfigManager';
 import { TYPES } from '../TYPES';
 import { promisify } from 'util';
 import pino from 'pino';
+import { EntityManager, EntityRepository, MikroORM } from '@mikro-orm/core';
+import type { PostgreSqlDriver } from '@mikro-orm/postgresql';
+import { Message } from '../entity/Message';
 
 const RETRY_DELAY = 5000;
 const MAX_RETRY_COUNT = 10;
@@ -31,7 +33,8 @@ const logger = pino();
 
 @injectable()
 export class BasicDatabaseServiceImpl implements BaseDatabaseService {
-    protected _connection: Connection;
+    protected _ormHelper: MikroORM<PostgreSqlDriver>;
+    protected _em: EntityManager;
     protected _retryCount: number = 0;
 
     constructor(@inject(TYPES.ConfigManager) protected _configManager: BaseConfigManager) {
@@ -39,7 +42,11 @@ export class BasicDatabaseServiceImpl implements BaseDatabaseService {
 
     public async start(): Promise<void> {
         try {
-            this._connection = await createConnection(this._configManager.databaseConnectionConfig());
+            if (!this._ormHelper) {
+                this._ormHelper = await MikroORM.init<PostgreSqlDriver>();
+            } else {
+                await this._ormHelper.connect();
+            }
             this._retryCount = 0;
         } catch (exception) {
             logger.warn(exception);
@@ -55,11 +62,11 @@ export class BasicDatabaseServiceImpl implements BaseDatabaseService {
     }
 
     public async stop(): Promise<void> {
-        await this._connection.close();
+        await this._ormHelper.close();
         return Promise.resolve(undefined);
     }
 
     public getMessageRepository(): MessageRepository {
-        return getCustomRepository<MessageRepository>(MessageRepository);
+        return this._em.getRepository(Message);
     }
 }

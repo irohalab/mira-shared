@@ -15,7 +15,8 @@
  */
 
 import { Options } from 'amqplib';
-import { ConnectionOptions } from 'typeorm';
+import { Configuration } from '@mikro-orm/core';
+import { PostgreSqlDriver } from '@mikro-orm/postgresql';
 
 /**
  * A base interface for consume project to extend
@@ -23,5 +24,5 @@ import { ConnectionOptions } from 'typeorm';
 export interface BaseConfigManager {
     amqpConfig(): Options.Connect;
     amqpServerUrl(): string;
-    databaseConnectionConfig(): ConnectionOptions;
+    databaseConfig(): Configuration<PostgreSqlDriver>;
 }

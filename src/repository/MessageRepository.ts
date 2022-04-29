@@ -14,22 +14,21 @@
  * limitations under the License.
  */
 
-import { EntityRepository, Repository } from 'typeorm';
 import { Message } from '../entity/Message';
+import { EntityRepository } from '@mikro-orm/postgresql';
 
-@EntityRepository(Message)
-export class MessageRepository extends Repository<Message> {
+export class MessageRepository extends EntityRepository<Message> {
     public async enqueueMessage(message: Message): Promise<void> {
         message.enqueuedTime = new Date();
-        await this.save(message);
+        await this.persist(message);
     }
 
     public async dequeueMessage(): Promise<Message | null> {
-        const result = await this.find({
-            order: {
+        const result = await this.find({}, {
+            orderBy: {
                 enqueuedTime: "ASC"
             },
-            take: 1
+            limit: 1
         });
         if (result.length > 0) {
             await this.remove(result[0]);
