@@ -21,7 +21,7 @@ import { BaseConfigManager } from '../utils/BaseConfigManager';
 import { TYPES } from '../TYPES';
 import { promisify } from 'util';
 import pino from 'pino';
-import { EntityManager, EntityRepository, MikroORM } from '@mikro-orm/core';
+import { EntityManager, MikroORM } from '@mikro-orm/core';
 import type { PostgreSqlDriver } from '@mikro-orm/postgresql';
 import { Message } from '../entity/Message';
 
@@ -43,7 +43,7 @@ export class BasicDatabaseServiceImpl implements BaseDatabaseService {
     public async start(): Promise<void> {
         try {
             if (!this._ormHelper) {
-                this._ormHelper = await MikroORM.init<PostgreSqlDriver>();
+                this._ormHelper = await MikroORM.init<PostgreSqlDriver>(this._configManager.databaseConfig());
             } else {
                 await this._ormHelper.connect();
             }
