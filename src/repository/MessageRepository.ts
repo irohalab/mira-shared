@@ -15,12 +15,12 @@
  */
 
 import { Message } from '../entity/Message';
-import { EntityRepository } from '@mikro-orm/postgresql';
+import { BaseEntityRepository } from './BaseEntityRepository';
 
-export class MessageRepository extends EntityRepository<Message> {
+export class MessageRepository extends BaseEntityRepository<Message> {
     public async enqueueMessage(message: Message): Promise<void> {
         message.enqueuedTime = new Date();
-        await this.persist(message);
+        await this.persistAndFlush(message);
     }
 
     public async dequeueMessage(): Promise<Message | null> {
