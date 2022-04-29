@@ -15,7 +15,7 @@
  */
 
 import { Options } from 'amqplib';
-import { Configuration } from '@mikro-orm/core';
+import { MikroORMOptions } from '@mikro-orm/core';
 import { PostgreSqlDriver } from '@mikro-orm/postgresql';
 
 /**
@@ -24,5 +24,5 @@ import { PostgreSqlDriver } from '@mikro-orm/postgresql';
 export interface BaseConfigManager {
     amqpConfig(): Options.Connect;
     amqpServerUrl(): string;
-    databaseConfig(): Configuration<PostgreSqlDriver>;
+    databaseConfig(): MikroORMOptions<PostgreSqlDriver>;
 }
