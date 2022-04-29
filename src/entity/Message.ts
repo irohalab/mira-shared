@@ -14,27 +14,31 @@
  * limitations under the License.
  */
 
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { DateType, Entity, JsonType, PrimaryKey, Property } from '@mikro-orm/core';
+import { MessageRepository } from '../repository/MessageRepository';
+import { randomUUID } from 'crypto';
 
-@Entity()
+@Entity({ customRepository: () => MessageRepository })
 export class Message {
 
-    @PrimaryGeneratedColumn('uuid')
-    public id: string;
+    @PrimaryKey()
+    public id: string = randomUUID();
 
-    @Column()
+    @Property()
     public exchange: string;
 
-    @Column()
+    @Property()
     public routingKey: string;
 
-    @Column({
-        type: 'json'
+    @Property({
+        columnType: 'json',
+        type: JsonType
     })
     public content: any;
 
-    @Column({
-        type: 'timestamp'
+    @Property({
+        columnType: 'timestamp',
+        type: DateType
     })
     public enqueuedTime: Date;
 }
