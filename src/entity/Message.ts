@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { DateType, Entity, JsonType, PrimaryKey, Property } from '@mikro-orm/core';
+import { DateType, Entity, EntityRepositoryType, JsonType, PrimaryKey, Property } from '@mikro-orm/core';
 import { MessageRepository } from '../repository/MessageRepository';
 import { randomUUID } from 'crypto';
 
@@ -41,4 +41,6 @@ export class Message {
         type: DateType
     })
     public enqueuedTime: Date;
+
+    [EntityRepositoryType]?: MessageRepository;
 }

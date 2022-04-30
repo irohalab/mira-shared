@@ -36,10 +36,6 @@ export class FakeDatabaseService implements BaseDatabaseService {
         return Promise.resolve(undefined);
     }
 
-    public get entityManager(): EntityManager {
-        return undefined;
-    }
-
     public requestContextMiddleware(): (req: Request, res: Response, next: NextFunction) => void {
         return function (p1: Request, p2: Response, p3: NextFunction) {
         };

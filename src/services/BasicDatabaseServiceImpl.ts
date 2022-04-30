@@ -69,14 +69,10 @@ export class BasicDatabaseServiceImpl implements BaseDatabaseService {
     }
 
     public getMessageRepository(): MessageRepository {
-        return this._em.getRepository(Message);
-    }
-
-    public get entityManager(): EntityManager {
-        return this._em;
+        return this._em.fork().getRepository(Message);
     }
 
     public requestContextMiddleware(): (req: Request, res: Response, next: NextFunction) => void {
-        return (req: Request, res: Response, next: NextFunction) => RequestContext.create(this.entityManager, next);
+        return (req: Request, res: Response, next: NextFunction) => RequestContext.create(this._em, next);
     }
 }

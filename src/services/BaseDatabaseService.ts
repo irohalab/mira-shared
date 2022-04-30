@@ -21,7 +21,6 @@ import { NextFunction, Request, Response } from 'express';
 export interface BaseDatabaseService {
     start(): Promise<void>;
     stop(): Promise<void>;
-    get entityManager(): EntityManager;
     requestContextMiddleware(): (req: Request, res: Response, next: NextFunction) => void;
     getMessageRepository(): MessageRepository;
 }
