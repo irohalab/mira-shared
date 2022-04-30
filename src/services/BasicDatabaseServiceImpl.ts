@@ -21,9 +21,10 @@ import { BaseConfigManager } from '../utils/BaseConfigManager';
 import { TYPES } from '../TYPES';
 import { promisify } from 'util';
 import pino from 'pino';
-import { EntityManager, MikroORM } from '@mikro-orm/core';
-import type { PostgreSqlDriver } from '@mikro-orm/postgresql';
+import { MikroORM, RequestContext } from '@mikro-orm/core';
+import type { EntityManager, PostgreSqlDriver } from '@mikro-orm/postgresql';
 import { Message } from '../entity/Message';
+import { NextFunction, Request, Response } from 'express';
 
 const RETRY_DELAY = 5000;
 const MAX_RETRY_COUNT = 10;
@@ -44,6 +45,7 @@ export class BasicDatabaseServiceImpl implements BaseDatabaseService {
         try {
             if (!this._ormHelper) {
                 this._ormHelper = await MikroORM.init<PostgreSqlDriver>(this._configManager.databaseConfig());
+                this._em = this._ormHelper.em;
             } else {
                 await this._ormHelper.connect();
             }
@@ -68,5 +70,13 @@ export class BasicDatabaseServiceImpl implements BaseDatabaseService {
 
     public getMessageRepository(): MessageRepository {
         return this._em.getRepository(Message);
+    }
+
+    public get entityManager(): EntityManager {
+        return this._em;
+    }
+
+    public requestContextMiddleware(): (req: Request, res: Response, next: NextFunction) => void {
+        return (req: Request, res: Response, next: NextFunction) => RequestContext.create(this.entityManager, next);
     }
 }

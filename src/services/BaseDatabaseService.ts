@@ -15,9 +15,13 @@
  */
 
 import { MessageRepository } from '../repository/MessageRepository';
+import { EntityManager } from '@mikro-orm/postgresql';
+import { NextFunction, Request, Response } from 'express';
 
 export interface BaseDatabaseService {
     start(): Promise<void>;
     stop(): Promise<void>;
+    get entityManager(): EntityManager;
+    requestContextMiddleware(): (req: Request, res: Response, next: NextFunction) => void;
     getMessageRepository(): MessageRepository;
 }
