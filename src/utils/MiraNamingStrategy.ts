@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import { EntityCaseNamingStrategy } from '@mikro-orm/core';
+import { EntityCaseNamingStrategy, NamingStrategy } from '@mikro-orm/core';
 
-export class MiraNamingStrategy extends EntityCaseNamingStrategy {
+export class MiraNamingStrategy extends EntityCaseNamingStrategy implements NamingStrategy {
     public classToTableName(entityName: string): string {
         return MiraNamingStrategy.underscore(entityName);
     }
