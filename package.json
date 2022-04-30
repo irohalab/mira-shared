@@ -1,6 +1,6 @@
 {
    "name": "@irohalab/mira-shared",
-   "version": "2.1.0",
+   "version": "2.2.0",
    "description": "Shared components for mira projects",
    "main": "index.js",
    "repository": {
