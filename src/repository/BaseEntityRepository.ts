@@ -18,6 +18,11 @@ import { EntityRepository } from '@mikro-orm/postgresql';
 
 export abstract class BaseEntityRepository<E> extends EntityRepository<E> {
     public async save(entities: E | E[]): Promise<E | E[]> {
+        if (Array.isArray(entities)) {
+            entities = entities.map(entity => this.create(entity));
+        } else {
+            entities = this.create(entities as E);
+        }
         await this.persist(entities).flush();
         return entities;
     }
