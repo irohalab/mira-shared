@@ -31,6 +31,7 @@ export * from './exceptions/TokenCheckException';
 export * from './exceptions/NotImplementException';
 
 export * from './repository/MessageRepository';
+export * from './repository/BaseEntityRepository';
 
 export * from './utils/BaseConfigManager';
 export * from './utils/Sentry';
