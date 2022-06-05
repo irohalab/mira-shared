@@ -1,0 +1,14 @@
+{
+   "type": "postgresql",
+   "host": "localhost",
+   "port": 5432,
+   "user": "postgres",
+   "password": "123456",
+   "dbName": "mira_shared",
+   "entities": [
+      "dist/entity/**/*.js"
+   ],
+   "entitiesTs": [
+      "src/entity/**/*.ts"
+   ]
+}

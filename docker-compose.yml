@@ -1,0 +1,13 @@
+version: '3.9'
+services:
+  'mira-shared-e2e':
+    build:
+      context: .
+    container_name: 'mira-shared-e2e'
+    environment:
+      ORMCONFIG: /etc/mira/ormconfig.json
+#      AMQP_URL:
+    volumes:
+      - ${MIRA_SHARED_CONFIG_DIR:-./mira-shared}/ormconfig.yml:/etc/mira/ormconfig.yml:ro
+    restart: unless-stopped
+    command: 'node dist/main.e2e.js'

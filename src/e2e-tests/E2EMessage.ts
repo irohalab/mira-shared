@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 IROHA LAB
+ * Copyright 2022 IROHA LAB
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 
-export interface Sentry {
-    setup(serverName: string, appName: string, version: string, rootDir: string): void;
-    capture(obj: any, context?: {[key: string]: string}): void;
+import { MQMessage } from '../domain/MQMessage';
+
+export class E2EMessage implements MQMessage {
+    public id: string;
+    public version: string;
+    public sendTime: string;
 }

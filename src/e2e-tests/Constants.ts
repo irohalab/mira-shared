@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 IROHA LAB
+ * Copyright 2022 IROHA LAB
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-export interface Sentry {
-    setup(serverName: string, appName: string, version: string, rootDir: string): void;
-    capture(obj: any, context?: {[key: string]: string}): void;
-}
+export const E2E_EXCHANGE = 'mira_shared_e2e_exchange';
+export const E2E_QUEUE = 'mira_shared_e2e_queue';
+export const E2E_BINDING_KEY = 'mira_shared_e2e_key';

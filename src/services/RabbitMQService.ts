@@ -58,11 +58,11 @@ export class RabbitMQService {
     private async connectAsync(): Promise<void> {
         this._connection = await connect(this._configManager.amqpServerUrl() || this._configManager.amqpConfig());
         this._connection.on('error', (error: any) => {
-            logger.error(error, {message: 'connection error on amqp', line:60});
+            logger.error(error,'line: 60, connection error on amqp');
             this._sentry.capture(error);
         });
         this._connection.on('close', (error: any) => {
-            logger.error(error || 'closed no error', {message: 'connection closed on amqp', line:67});
+            logger.error(error || {errorMessage:'closed no error'}, 'connection closed on amqp line:67');
             if (this._connected && isFatalError(error)) {
                 this._sentry.capture(error);
                 this.reconnect();
@@ -91,7 +91,7 @@ export class RabbitMQService {
                 })
                 .catch((err) => {
                     this._sentry.capture(err);
-                    logger.error(err);
+                    logger.error(err, 'connect failed due to error, line: 94');
                 })
         }, 5000);
     };
@@ -146,7 +146,7 @@ export class RabbitMQService {
                         });
                 });
             } catch (e: any) {
-                logger.error(e);
+                logger.error(e, 'exception catch when publish' + JSON.stringify(e.stack));
                 this._sentry.capture(e, {stack: e.stack, line: '143', exchangeName, routingKey, message});
                 return this.saveMessage(exchangeName, routingKey, message)
                     .then(() => {
@@ -185,10 +185,10 @@ export class RabbitMQService {
                 });
                 return result.consumerTag;
             } catch (error: any) {
+                logger.error(error, 'error when consume, stack: ' + error.stack);
                 if (error.isOperational && error.message.includes('BasicConsume; 404')){
                     return null;
                 }
-                logger.error(error);
                 this._sentry.capture(error);
                 return null;
             }
@@ -214,6 +214,7 @@ export class RabbitMQService {
                 try {
                     result = await this.publish(message.exchange, message.routingKey, message.content);
                 } catch (err) {
+                    logger.error(err, 'error when resend message, stack: ' + err.stack);
                     this._sentry.capture(err);
                     result = false;
                     break;

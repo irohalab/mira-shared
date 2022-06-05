@@ -22,17 +22,23 @@ import {
 } from '@sentry/node';
 import { Sentry } from './Sentry';
 import { injectable } from 'inversify';
+import { RewriteFrames } from '@sentry/integrations';
 
 const DSN = process.env.SENTRY_DSN;
 
 @injectable()
 export class SentryImpl implements Sentry {
 
-    public setup(serverName: string, appName: string, version: string): void {
+    public setup(serverName: string, appName: string, version: string, rootDir: string): void {
         if (DSN) {
             init({
                 dsn: DSN,
                 release: `${appName}@v${version}`,
+                integrations: [
+                    new RewriteFrames({
+                        root: rootDir
+                    })
+                ],
                 serverName
             });
         }
