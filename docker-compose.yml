@@ -3,23 +3,25 @@ services:
   'mira-shared-e2e-pub':
     build:
       context: .
-    container_name: 'mira-shared-e2e'
+    container_name: 'mira-shared-e2e-pub'
     environment:
       ORMCONFIG: /etc/mira/ormconfig.json
       IS_PUBLISHER: true
-#      AMQP_URL:
+      AMQP_URL: ${AMQP_URL}
+      SENTRY_DSN: ${SENTRY_DSN}
     volumes:
-      - ${MIRA_SHARED_CONFIG_DIR:-./mira-shared}/ormconfig.yml:/etc/mira/ormconfig.yml:ro
+      - ${MIRA_SHARED_CONFIG_DIR:-./mira-shared}/ormconfig.json:/etc/mira/ormconfig.json:ro
     restart: unless-stopped
     command: 'node dist/main.e2e.js'
   'mira-shared-e2e-consumer':
     build:
       context: .
-    container_name: 'mira-shared-e2e'
+    container_name: 'mira-shared-e2e-consumer'
     environment:
       ORMCONFIG: /etc/mira/ormconfig.json
-    #      AMQP_URL:
+      AMQP_URL: ${AMQP_URL}
+      SENTRY_DSN: ${SENTRY_DSN}
     volumes:
-      - ${MIRA_SHARED_CONFIG_DIR:-./mira-shared}/ormconfig.yml:/etc/mira/ormconfig.yml:ro
+      - ${MIRA_SHARED_CONFIG_DIR:-./mira-shared}/ormconfig.json:/etc/mira/ormconfig.json:ro
     restart: unless-stopped
     command: 'node dist/main.e2e.js'
