@@ -37,7 +37,7 @@ container.bind<Sentry>(TYPES.Sentry).to(SentryImpl).inSingletonScope();
 const version  = process.env.RELEASE_VERSION || "0.0.1";
 const sentry = container.get<Sentry>(TYPES.Sentry);
 
-sentry.setup(`mira_shared_e2e_${hostname()}`, 'mira-shared-e2e', version, __dirname);
+sentry.setup(`mira_shared_e2e_${hostname()}`, 'mira-shared-e2e', version, process.cwd());
 
 container.bind<ConfigManager>(TYPES.ConfigManager).to(ConfigManagerImpl).inSingletonScope();
 container.bind<RabbitMQService>(RabbitMQService).toSelf().inSingletonScope();
