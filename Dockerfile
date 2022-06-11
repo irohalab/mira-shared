@@ -16,7 +16,7 @@ ENV HOME=/app
 
 # create a release
 ENV RELEASE = mira-shared-e2e@$RELEASE_VERSION;
-RUN sentry-cli --auth-token $SENTRY_AUTH_TOKEN release new -o $SENTRY_ORG -p $SENTRY_PROJECT $RELEASE
+RUN sentry-cli --auth-token $SENTRY_AUTH_TOKEN releases -o $SENTRY_ORG -p $SENTRY_PROJECT new $RELEASE
 RUN sentry-cli --auth-token $SENTRY_AUTH_TOKEN releases -o $SENTRY_ORG -p $SENTRY_PROJECT set-commits --auto $RELEASE
 
 # upload sourcemaps
