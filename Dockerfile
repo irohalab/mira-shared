@@ -1,7 +1,6 @@
 FROM node:17 AS base
 # install sentry-cli
-ENV INSTALL_DIR=/usr/bin
-RUN curl -sL https://sentry.io/get-cli/ | bash
+RUN npm install -g @sentry/cli
 WORKDIR /app
 
 FROM base AS dev
