@@ -22,7 +22,7 @@ RUN sentry-cli releases new $RELEASE_VERSION
 RUN sentry-cli releases set-commits --auto $RELEASE_VERSION
 
 # upload sourcemaps
-RUN sentry-cli releases files $RELEASE_VERSION upload-sourcemaps --ext ts --ext map /app/dist --url-prefix 'app:///dist' --validate
+RUN sentry-cli releases files $RELEASE_VERSION upload-sourcemaps --ext ts --ext map /app/dist --url-prefix 'app:///' --validate
 
 # finalize release
 RUN sentry-cli releases finalize $RELEASE_VERSION
