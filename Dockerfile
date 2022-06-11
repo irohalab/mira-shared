@@ -1,4 +1,7 @@
 FROM node:17 AS base
+ARG SENTRY_AUTH_TOKEN
+ARG SENTRY_ORG
+ARG SENTRY_PROJECT
 # install sentry-cli
 RUN npm install -g @sentry/cli
 WORKDIR /app
@@ -16,11 +19,11 @@ ENV HOME=/app
 
 # create a release
 ENV RELEASE = mira-shared-e2e@$RELEASE_VERSION;
-RUN sentry-cli --auth-token $SENTRY_AUTH_TOKEN releases -o $SENTRY_ORG -p $SENTRY_PROJECT new $RELEASE
-RUN sentry-cli --auth-token $SENTRY_AUTH_TOKEN releases -o $SENTRY_ORG -p $SENTRY_PROJECT set-commits --auto $RELEASE
+RUN sentry-cli releases new $RELEASE
+RUN sentry-cli releases set-commits --auto $RELEASE
 
 # upload sourcemaps
-RUN sentry-cli --auth-token $SENTRY_AUTH_TOKEN releases -o $SENTRY_ORG -p $SENTRY_PROJECT files $RELEASE upload-sourcemaps --ext ts --ext map /app/dist
+RUN sentry-cli releases files $RELEASE upload-sourcemaps --ext ts --ext map /app/dist
 
 # finalize release
-RUN sentry-cli --auth-token $SENTRY_AUTH_TOKEN releases -o $SENTRY_ORG -p $SENTRY_PROJECT finalize $RELEASE
+RUN sentry-cli releases finalize $RELEASE

@@ -3,6 +3,10 @@ services:
   'mira-shared-e2e-pub':
     build:
       context: .
+      args:
+        SENTRY_AUTH_TOKEN: ${SENTRY_AUTH_TOKEN}
+        SENTRY_ORG: ${SENTRY_ORG}
+        SENTRY_PROJECT: ${SENTRY_PROJECT}
     container_name: 'mira-shared-e2e-pub'
     environment:
       ORMCONFIG: /etc/mira/ormconfig.json
@@ -10,9 +14,6 @@ services:
       AMQP_URL: ${AMQP_URL}
       SENTRY_DSN: ${SENTRY_DSN}
       RELEASE_VERSION: '${RELEASE_VERSION}'
-      SENTRY_AUTH_TOKEN: ${SENTRY_AUTH_TOKEN}
-      SENTRY_ORG: ${SENTRY_ORG}
-      SENTRY_PROJECT: ${SENTRY_PROJECT}
     volumes:
       - ${MIRA_SHARED_CONFIG_DIR:-./mira-shared}/ormconfig.json:/etc/mira/ormconfig.json:ro
     restart: unless-stopped
@@ -20,15 +21,16 @@ services:
   'mira-shared-e2e-consumer':
     build:
       context: .
+      args:
+        SENTRY_AUTH_TOKEN: ${SENTRY_AUTH_TOKEN}
+        SENTRY_ORG: ${SENTRY_ORG}
+        SENTRY_PROJECT: ${SENTRY_PROJECT}
     container_name: 'mira-shared-e2e-consumer'
     environment:
       ORMCONFIG: /etc/mira/ormconfig.json
       AMQP_URL: ${AMQP_URL}
       SENTRY_DSN: ${SENTRY_DSN}
       RELEASE_VERSION: '${RELEASE_VERSION}'
-      SENTRY_AUTH_TOKEN: ${SENTRY_AUTH_TOKEN}
-      SENTRY_ORG: ${SENTRY_ORG}
-      SENTRY_PROJECT: ${SENTRY_PROJECT}
     volumes:
       - ${MIRA_SHARED_CONFIG_DIR:-./mira-shared}/ormconfig.json:/etc/mira/ormconfig.json:ro
     restart: unless-stopped
