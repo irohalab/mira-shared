@@ -16,7 +16,7 @@ FROM dev AS prod
 RUN npm run build:e2e
 
 ENV HOME=/app
-
+ARG RELEASE_VERSION
 # create a release
 ENV RELEASE = mira-shared-e2e@$RELEASE_VERSION;
 RUN sentry-cli releases new $RELEASE
