@@ -33,7 +33,7 @@ export class SentryImpl implements Sentry {
         if (DSN) {
             init({
                 dsn: DSN,
-                release: `${appName}@v${version}`,
+                release: `${appName}@${version}`,
                 integrations: [
                     new RewriteFrames({
                         root: rootDir
