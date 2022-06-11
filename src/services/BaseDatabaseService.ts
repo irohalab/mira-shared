@@ -23,4 +23,6 @@ export interface BaseDatabaseService {
     stop(): Promise<void>;
     requestContextMiddleware(): (req: Request, res: Response, next: NextFunction) => void;
     getMessageRepository(): MessageRepository;
+    generateSchema(): Promise<string>;
+    syncSchema(): Promise<void>;
 }

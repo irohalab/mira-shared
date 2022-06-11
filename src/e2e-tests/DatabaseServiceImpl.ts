@@ -20,10 +20,18 @@ import { injectable } from 'inversify';
 
 @injectable()
 export class DatabaseServiceImpl extends BasicDatabaseServiceImpl implements DatabaseService {
+    public async init(): Promise<void> {
+        try {
+            await this.syncSchema();
+            await this._em.execute('CREATE TABLE IF NOT EXISTS msg_count (count integer not NULL);');
+        } catch (e) {
+            console.error(e);
+        }
+    }
 
     public async start(): Promise<void> {
         await super.start();
-        await this._em.execute('CREATE TABLE IF NOT EXISTS msg_count (count integer not NULL);');
+        await this.init();
     }
 
     public async decrementMsgCount(): Promise<void> {

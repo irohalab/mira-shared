@@ -34,7 +34,7 @@ const container = new Container();
 
 container.bind<Sentry>(TYPES.Sentry).to(SentryImpl).inSingletonScope();
 // tslint:disable-next-line
-const { version } = require('../package.json');
+const version  = process.env.RELEASE_VERSION || "0.0.1";
 const sentry = container.get<Sentry>(TYPES.Sentry);
 
 sentry.setup(`mira_shared_e2e_${hostname()}`, 'mira-shared-e2e', version, __dirname);

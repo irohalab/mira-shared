@@ -50,7 +50,7 @@ export class RabbitMQE2EService {
                 await this._databaseService.decrementMsgCount();
                 await sleep(2000);
                 return true;
-            })
+            });
         }
     }
 

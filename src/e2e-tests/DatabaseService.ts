@@ -20,4 +20,5 @@ export interface DatabaseService extends BaseDatabaseService {
     incrementMsgCount(): Promise<void>;
     decrementMsgCount(): Promise<void>;
     getCount(): Promise<number>;
+    init(): Promise<void>;
 }

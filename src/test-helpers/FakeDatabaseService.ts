@@ -23,6 +23,12 @@ import { Request, Response, NextFunction } from 'express';
 
 @injectable()
 export class FakeDatabaseService implements BaseDatabaseService {
+    generateSchema(): Promise<string> {
+        throw new Error('Method not implemented.');
+    }
+    syncSchema(): Promise<void> {
+        throw new Error('Method not implemented.');
+    }
 
     getMessageRepository(): FakeMessageRepository {
         return undefined;
