@@ -18,12 +18,11 @@ RUN npm run build:e2e
 ENV HOME=/app
 ARG RELEASE_VERSION
 # create a release
-ENV RELEASE = mira-shared-e2e@$RELEASE_VERSION;
-RUN sentry-cli releases new $RELEASE
-RUN sentry-cli releases set-commits --auto $RELEASE
+RUN sentry-cli releases new $RELEASE_VERSION
+RUN sentry-cli releases set-commits --auto $RELEASE_VERSION
 
 # upload sourcemaps
-RUN sentry-cli releases files $RELEASE upload-sourcemaps --ext ts --ext map /app/dist
+RUN sentry-cli releases files $RELEASE_VERSION upload-sourcemaps --ext ts --ext map /app/dist
 
 # finalize release
-RUN sentry-cli releases finalize $RELEASE
+RUN sentry-cli releases finalize $RELEASE_VERSION
