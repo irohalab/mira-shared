@@ -17,8 +17,7 @@
 import {
     init,
     captureMessage as sentryCaptureMessage,
-    captureException as sentryCaptureException,
-    Scope
+    captureException as sentryCaptureException, Scope
 } from '@sentry/node';
 import { Sentry } from './Sentry';
 import { injectable } from 'inversify';
@@ -47,15 +46,27 @@ export class SentryImpl implements Sentry {
     public capture(obj: any, context?: { [p: string]: string }): void {
         if (DSN) {
             if (context) {
-                const scope = new Scope();
-                for (const [k, v] of Object.entries(context)) {
-                    scope.setTag(k, v);
+                if (obj instanceof Error) {
+                    sentryCaptureException(obj, scope => {
+                        for (const [k, v] of Object.entries(context)) {
+                            scope.setTag(k, v);
+                        }
+                        return scope;
+                    });
+                } else {
+                    sentryCaptureMessage(obj, scope => {
+                        for (const [k, v] of Object.entries(context)) {
+                            scope.setTag(k, v);
+                        }
+                        return scope;
+                    });
                 }
-            }
-            if (obj instanceof Error) {
-                sentryCaptureException(obj);
             } else {
-                sentryCaptureMessage(obj);
+                if (obj instanceof Error) {
+                    sentryCaptureException(obj);
+                } else {
+                    sentryCaptureMessage(obj);
+                }
             }
         }
     }
