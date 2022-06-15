@@ -234,16 +234,19 @@ export class RabbitMQService {
         const channel = await this._connection.createConfirmChannel();
         this._channels.set(exchangeName, channel);
         this._exchanges.set(exchangeName, exchangeType);
-        channel.on('close', () => this.onChannelClose(exchangeName));
+        channel.on('close', (error) => this.onChannelClose(exchangeName, error));
         channel.on('error', (error) => this.onChannelError(exchangeName, error));
         return channel;
     }
 
-    private onChannelClose(exchangeName): void {
+    private onChannelClose(exchangeName, error): void {
         this._channels.set(exchangeName, null);
+        logger.error(error);
+        this._sentry.capture(error, {stack: error.stack, line: '215', exchangeName});
     }
     private onChannelError(exchangeName, error: any): void {
         this._channels.set(exchangeName, null);
+        logger.error(error);
         this._sentry.capture(error, {stack: error.stack, line: '215', exchangeName});
     }
 }
