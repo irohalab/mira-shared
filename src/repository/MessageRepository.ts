@@ -32,6 +32,7 @@ export class MessageRepository extends BaseEntityRepository<Message> {
         });
         if (result.length > 0) {
             await this.remove(result[0]);
+            await this.flush();
             return result[0];
         }
         return null;
