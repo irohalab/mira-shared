@@ -26,7 +26,9 @@ import { DatabaseService } from './e2e-tests/DatabaseService';
 import { DatabaseServiceImpl } from './e2e-tests/DatabaseServiceImpl';
 import { ConfigManager } from './e2e-tests/ConfigManager';
 import { ConfigManagerImpl } from './e2e-tests/ConfigManagerImpl';
+import { AmqplibImpl } from './services/AmqplibImpl';
 import { RabbitMQService } from './services/RabbitMQService';
+import { AmqpClientJSImpl } from './services/AmqpClientJSImpl';
 
 const logger = pino();
 
@@ -40,7 +42,12 @@ const sentry = container.get<Sentry>(TYPES.Sentry);
 sentry.setup(`mira_shared_e2e_${hostname()}`, version, __dirname);
 
 container.bind<ConfigManager>(TYPES.ConfigManager).to(ConfigManagerImpl).inSingletonScope();
-container.bind<RabbitMQService>(RabbitMQService).toSelf().inSingletonScope();
+if (process.env.AMQP_CLIENT === 'amqplib') {
+    container.bind<RabbitMQService>(TYPES.RabbitMQService).to(AmqplibImpl).inSingletonScope();
+} else {
+    container.bind<RabbitMQService>(TYPES.RabbitMQService).to(AmqpClientJSImpl).inSingletonScope();
+}
+
 container.bind<RabbitMQE2EService>(RabbitMQE2EService).toSelf().inSingletonScope();
 container.bind<DatabaseService>(TYPES.DatabaseService).to(DatabaseServiceImpl).inSingletonScope();
 

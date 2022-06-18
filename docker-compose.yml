@@ -18,7 +18,7 @@ services:
     volumes:
       - ${MIRA_SHARED_CONFIG_DIR:-./mira-shared}/ormconfig.json:/etc/mira/ormconfig.json:ro
     restart: unless-stopped
-    command: 'node dist/main.e2e.js'
+    command: 'node --enable-source-maps dist/main.e2e.js'
   'mira-shared-e2e-consumer':
     build:
       context: .
@@ -36,7 +36,7 @@ services:
     volumes:
       - ${MIRA_SHARED_CONFIG_DIR:-./mira-shared}/ormconfig.json:/etc/mira/ormconfig.json:ro
     restart: unless-stopped
-    command: 'node dist/main.e2e.js'
+    command: 'node --enable-source-maps dist/main.e2e.js'
 networks:
   default:
     external: true

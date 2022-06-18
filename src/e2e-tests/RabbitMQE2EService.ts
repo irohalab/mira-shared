@@ -15,7 +15,6 @@
  */
 
 import { inject, injectable } from 'inversify';
-import { RabbitMQService } from '../services/RabbitMQService';
 import { E2E_BINDING_KEY, E2E_EXCHANGE, E2E_QUEUE } from './Constants';
 import { inspect, promisify } from 'util';
 import { TYPES } from '../TYPES';
@@ -23,6 +22,7 @@ import { DatabaseService } from './DatabaseService';
 import pino from 'pino';
 import { Sentry } from '../utils/Sentry';
 import { E2EMessage } from './E2EMessage';
+import { RabbitMQService } from '../services/RabbitMQService';
 
 const sleep = promisify(setTimeout);
 const logger = pino();
@@ -31,7 +31,7 @@ const logger = pino();
 export class RabbitMQE2EService {
     private _checkTimerId: NodeJS.Timeout;
     private _sendTimerId: NodeJS.Timeout;
-    constructor(private _mqService: RabbitMQService,
+    constructor(@inject(TYPES.RabbitMQService) private _mqService: RabbitMQService,
                 @inject(TYPES.DatabaseService) private _databaseService: DatabaseService,
                 @inject(TYPES.Sentry) private _sentry: Sentry) {
     }
@@ -46,7 +46,7 @@ export class RabbitMQE2EService {
         } else {
             await this._mqService.initConsumer(E2E_EXCHANGE, 'direct', E2E_QUEUE, E2E_BINDING_KEY, false);
             await this._mqService.consume(E2E_QUEUE, async (msg) => {
-                console.log(inspect(msg, {depth: null}))
+                logger.info(inspect(msg, {depth: null}))
                 await this._databaseService.decrementMsgCount();
                 await sleep(2000);
                 return true;
@@ -64,7 +64,7 @@ export class RabbitMQE2EService {
         const msg = new E2EMessage();
         msg.sendTime = new Date().toISOString();
         if (await this._mqService.publish(E2E_EXCHANGE, E2E_BINDING_KEY, msg)) {
-            console.log('msg sent: ' + JSON.stringify(msg));
+            logger.info('msg sent: ' + JSON.stringify(msg));
             await this._databaseService.incrementMsgCount();
         }
         this._sendTimerId = setTimeout(() => {this.sendMessage();}, 10 * 60 * 1000);
