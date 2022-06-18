@@ -16,7 +16,7 @@
 
 import test from 'ava';
 import { Container } from 'inversify';
-import { RabbitMQService } from './RabbitMQService';
+import { AmqplibImpl } from './AmqplibImpl';
 import { BaseConfigManager } from '../utils/BaseConfigManager';
 import { TYPES } from '../TYPES';
 import { FakeConfigManager } from '../test-helpers/FakeConfigManager';
@@ -26,6 +26,7 @@ import { DownloadMQMessage } from '../domain/DownloadMQMessage';
 import { v4 as uuid4 } from 'uuid';
 import { MQMessage } from '../domain/MQMessage';
 import { FakeSentry } from '../test-helpers/FakeSentry';
+import { RabbitMQService } from './RabbitMQService';
 
 let rabbitMQService: RabbitMQService;
 
@@ -38,7 +39,8 @@ test.beforeEach( async (t) => {
     container.bind<BaseConfigManager>(TYPES.ConfigManager).to(FakeConfigManager);
     container.bind<BaseDatabaseService>(TYPES.DatabaseService).to(FakeDatabaseService);
     container.bind<FakeSentry>(TYPES.Sentry).to(FakeSentry);
-    rabbitMQService = container.get<RabbitMQService>(RabbitMQService);
+    container.bind<RabbitMQService>(TYPES.RabbitMQService).to(AmqplibImpl);
+    rabbitMQService = container.get<RabbitMQService>(TYPES.RabbitMQService);
 });
 
 test('publish and consume', async (t) => {
