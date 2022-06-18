@@ -40,4 +40,4 @@ services:
 networks:
   default:
     external: true
-    name: mira
+    name: ${NETWORK_NAME:-mira}
