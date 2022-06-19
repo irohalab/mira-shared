@@ -252,8 +252,12 @@ export class AmqpClientJSImpl implements RabbitMQService {
         }, RESEND_INTERVAL);
     }
 
-    private async checkChannelStatus(channel: AMQPChannel): Promise<void> {
-        if (channel.connection.closed) {
+    private async checkChannelStatus(channel: AMQPChannel, error?: any): Promise<void> {
+        let needReconnect = false;
+        if (error && error.code === 'ERR_STREAM_DESTROYED' || channel.connection.closed) {
+            needReconnect = true;
+        }
+        if (needReconnect) {
             // reconnect for all connections
             // try to close first
             logger.warn('trying to close current connection');
