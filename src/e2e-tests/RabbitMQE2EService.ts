@@ -27,10 +27,13 @@ import { RabbitMQService } from '../services/RabbitMQService';
 const sleep = promisify(setTimeout);
 const logger = pino();
 
+const EXPIRE_TIME = 3 * 60 * 1000;
+
 @injectable()
 export class RabbitMQE2EService {
     private _checkTimerId: NodeJS.Timeout;
     private _sendTimerId: NodeJS.Timeout;
+    private _checkFailedMsgTimerId: NodeJS.Timeout;
     constructor(@inject(TYPES.RabbitMQService) private _mqService: RabbitMQService,
                 @inject(TYPES.DatabaseService) private _databaseService: DatabaseService,
                 @inject(TYPES.Sentry) private _sentry: Sentry) {
@@ -42,6 +45,8 @@ export class RabbitMQE2EService {
             this.sendMessage()
                 .then(() => {});
             this.checkMsgCount()
+                .then(() => {});
+            this.checkFailedMessages()
                 .then(() => {});
         } else {
             await this._mqService.initConsumer(E2E_EXCHANGE, 'direct', E2E_QUEUE, E2E_BINDING_KEY, false);
@@ -81,5 +86,22 @@ export class RabbitMQE2EService {
             this._sentry.capture(e);
         }
         this._checkTimerId = setTimeout(() => {this.checkMsgCount();}, 12 * 3600 * 1000);
+    }
+
+    private async checkFailedMessages(): Promise<void> {
+        const messageRepo = await this._databaseService.getMessageRepository();
+        try {
+            const nowTimestamp = Date.now();
+            const messages = await messageRepo.findAll();
+            for (const msg of messages) {
+                if (nowTimestamp - msg.enqueuedTime.valueOf() > EXPIRE_TIME) {
+                    throw new Error('Message expired: ' + JSON.stringify(msg));
+                }
+            }
+        } catch (e) {
+            logger.error(e);
+            this._sentry.capture(e);
+        }
+        this._checkFailedMsgTimerId = setTimeout(() => {this.checkFailedMessages();}, 3600 * 1000);
     }
 }
