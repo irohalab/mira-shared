@@ -213,7 +213,10 @@ export class AmqpClientJSImpl implements RabbitMQService {
         } catch (error) {
             // not ack
             logger.error(error);
-            this._sentry.capture(error);
+            // since this error can be very frequent. avoid sending to sentry.
+            if (!AmqpClientJSImpl.isSocketError(error)) {
+                this._sentry.capture(error);
+            }
             await this.saveMessage(exchangeName, routingKey, message);
             await this.checkChannelStatus(publisher.channel);
         }
@@ -254,7 +257,7 @@ export class AmqpClientJSImpl implements RabbitMQService {
 
     private async checkChannelStatus(channel: AMQPChannel, error?: any): Promise<void> {
         let needReconnect = false;
-        if (error && error.code === 'ERR_STREAM_DESTROYED' || channel.connection.closed) {
+        if (AmqpClientJSImpl.isSocketError(error) || channel.connection.closed) {
             needReconnect = true;
         }
         if (needReconnect) {
@@ -285,5 +288,9 @@ export class AmqpClientJSImpl implements RabbitMQService {
                 this.consumers.get(queueName).consumer = await this.subscribeConsumer(queueSetting.queueInstance);
             }
         }
+    }
+
+    private static isSocketError(error: any): boolean {
+        return error && error.code === 'ERR_STREAM_DESTROYED';
     }
 }
