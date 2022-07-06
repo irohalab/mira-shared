@@ -23,6 +23,7 @@ export class DatabaseServiceImpl extends BasicDatabaseServiceImpl implements Dat
     public async init(): Promise<void> {
         try {
             await this.syncSchema();
+            await this._em.execute('DROP TABLE IF EXISTS msg_count');
             await this._em.execute('CREATE TABLE IF NOT EXISTS msg_count (count integer not NULL);');
         } catch (e) {
             console.error(e);
@@ -31,7 +32,6 @@ export class DatabaseServiceImpl extends BasicDatabaseServiceImpl implements Dat
 
     public async start(): Promise<void> {
         await super.start();
-        await this.init();
     }
 
     public async decrementMsgCount(): Promise<void> {

@@ -29,6 +29,8 @@ import { ConfigManagerImpl } from './e2e-tests/ConfigManagerImpl';
 import { AmqplibImpl } from './services/AmqplibImpl';
 import { RabbitMQService } from './services/RabbitMQService';
 import { AmqpClientJSImpl } from './services/AmqpClientJSImpl';
+import { createReadStream, readFileSync, writeFileSync } from 'fs';
+import { join } from 'path';
 
 const logger = pino();
 
@@ -56,7 +58,25 @@ const mqService = container.get<RabbitMQE2EService>(RabbitMQE2EService);
 
 const isPublisher = process.env.IS_PUBLISHER === 'true';
 
+// marker file's life cycle is equal to the container, so if we want to clean data when container is destroyed, we can
+// check its existence.
+let markerFile;
+const markerPath = join(__dirname, 'marker');
+try {
+    markerFile = readFileSync(markerPath, {encoding: 'utf-8'});
+} catch (e) {
+    logger.info('create marker file...');
+    writeFileSync(markerPath, 'ok', {encoding: 'utf-8'});
+}
+
 databaseService.start()
+    .then(() => {
+        if (!markerFile) {
+            return databaseService.init();
+        } else {
+            return Promise.resolve();
+        }
+    })
     .then(() => {
         return mqService.start(isPublisher);
     })
