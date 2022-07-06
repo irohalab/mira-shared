@@ -71,7 +71,7 @@ try {
 
 databaseService.start()
     .then(() => {
-        if (!markerFile) {
+        if (!markerFile && isPublisher) {
             return databaseService.init();
         } else {
             return Promise.resolve();
