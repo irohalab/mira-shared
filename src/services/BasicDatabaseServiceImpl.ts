@@ -83,6 +83,7 @@ export class BasicDatabaseServiceImpl implements BaseDatabaseService {
 
     public async syncSchema(): Promise<void> {
         const generator = this._ormHelper.getSchemaGenerator();
+        await generator.dropSchema();
         await generator.createSchema();
     }
 }
