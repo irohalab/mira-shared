@@ -25,7 +25,9 @@ import { E2EMessage } from './E2EMessage';
 import { RabbitMQService } from '../services/RabbitMQService';
 
 const sleep = promisify(setTimeout);
-const logger = pino();
+const logger = pino({
+    timestamp: pino.stdTimeFunctions.isoTime
+});
 
 const EXPIRE_TIME = 3 * 60 * 1000;
 

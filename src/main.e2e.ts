@@ -32,7 +32,9 @@ import { AmqpClientJSImpl } from './services/AmqpClientJSImpl';
 import { createReadStream, readFileSync, writeFileSync } from 'fs';
 import { join } from 'path';
 
-const logger = pino();
+const logger = pino({
+    timestamp: pino.stdTimeFunctions.isoTime
+});
 
 const container = new Container();
 
