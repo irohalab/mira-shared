@@ -26,7 +26,9 @@ import { AMQPChannel, AMQPClient, AMQPConsumer, AMQPMessage, AMQPQueue } from '@
 import pino from 'pino';
 import { Message } from '../entity/Message';
 
-const logger = pino();
+const logger = pino({
+    timestamp: pino.stdTimeFunctions.isoTime
+});
 
 interface PublisherSetting {
     channel: AMQPChannel;
@@ -218,7 +220,7 @@ export class AmqpClientJSImpl implements RabbitMQService {
                 this._sentry.capture(error);
             }
             await this.saveMessage(exchangeName, routingKey, message);
-            await this.checkChannelStatus(publisher.channel);
+            await this.checkChannelStatus(publisher.channel, error);
         }
         return true;
     }
