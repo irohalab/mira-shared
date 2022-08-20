@@ -22,7 +22,7 @@ import { BaseConfigManager } from '../utils/BaseConfigManager';
 import { BaseDatabaseService } from './BaseDatabaseService';
 import { Sentry } from '../utils/Sentry';
 import { AMQPBaseClient } from '@cloudamqp/amqp-client/types/amqp-base-client';
-import { AMQPChannel, AMQPClient, AMQPConsumer, AMQPMessage, AMQPQueue } from '@cloudamqp/amqp-client';
+import { AMQPChannel, AMQPClient, AMQPConsumer, AMQPError, AMQPMessage, AMQPQueue } from '@cloudamqp/amqp-client';
 import pino from 'pino';
 import { Message } from '../entity/Message';
 
@@ -72,6 +72,8 @@ export class AmqpClientJSImpl implements RabbitMQService {
     private resendMessageRepeatTimerId: NodeJS.Timeout;
     private saveMessageRetryTimerId: NodeJS.Timeout;
 
+    private isReconnecting = false;
+
     constructor(@inject(TYPES.ConfigManager) private _configManager: BaseConfigManager,
                 @inject(TYPES.DatabaseService) private _databaseService: BaseDatabaseService,
                 @inject(TYPES.Sentry) private _sentry: Sentry) {
@@ -86,6 +88,12 @@ export class AmqpClientJSImpl implements RabbitMQService {
             if (connectPublisher) {
                 logger.info('connecting to amqp server for ' + (connectPublisher ? 'publishers': 'consumers'));
                 this._publisherConnection = await client.connect();
+                this._publisherConnection.onerror = (error) => {
+                    logger.error(error);
+                    if (!this.isReconnecting) {
+                        this.reconnect();
+                    }
+                };
                 // try resend message
                 if (this.resendMessageRepeatTimerId) {
                     clearTimeout(this.resendMessageRepeatTimerId);
@@ -93,6 +101,12 @@ export class AmqpClientJSImpl implements RabbitMQService {
                 await this.resendMessage();
             } else {
                 this._consumerConnection = await client.connect();
+                this._consumerConnection.onerror = (error) => {
+                    logger.error(error);
+                    if (!this.isReconnecting) {
+                        this.reconnect();
+                    }
+                };
             }
         } catch (error) {
             logger.error(error);
@@ -215,12 +229,9 @@ export class AmqpClientJSImpl implements RabbitMQService {
         } catch (error) {
             // not ack
             logger.error(error);
-            // since this error can be very frequent. avoid sending to sentry.
-            if (!AmqpClientJSImpl.isSocketError(error)) {
-                this._sentry.capture(error);
-            }
+            // this._sentry.capture(error);
             await this.saveMessage(exchangeName, routingKey, message);
-            await this.checkChannelStatus(publisher.channel, error);
+            await this.checkChannelStatus(publisher.channel);
         }
         return true;
     }
@@ -257,42 +268,40 @@ export class AmqpClientJSImpl implements RabbitMQService {
         }, RESEND_INTERVAL);
     }
 
-    private async checkChannelStatus(channel: AMQPChannel, error?: any): Promise<void> {
-        let needReconnect = false;
-        if (AmqpClientJSImpl.isSocketError(error) || channel.connection.closed) {
-            needReconnect = true;
-        }
-        if (needReconnect) {
-            // reconnect for all connections
-            // try to close first
-            logger.warn('trying to close current connection');
-            try {
-                await this._publisherConnection.close();
-            } catch (err) {
-                logger.warn(err);
-            }
-
-            try {
-                await this._consumerConnection.close();
-            } catch (err) {
-                logger.warn(err);
-            }
-            logger.warn('trying to reconnect');
-            await this.connect(true);
-            await this.connect();
-
-            logger.warn('connected successfully, trying to recreate channels');
-            for (const [exchangeName, publisherSetting] of this.publishers.entries()) {
-                await this.initPublisher(exchangeName, publisherSetting.exchangeType);
-            }
-            for (const [queueName, queueSetting] of this.queues.entries()) {
-                await this.initConsumer(queueSetting.exchangeName, queueSetting.exchangeType, queueName, queueSetting.bindingKey, queueSetting.prefetch);
-                this.consumers.get(queueName).consumer = await this.subscribeConsumer(queueSetting.queueInstance);
-            }
+    private async checkChannelStatus(channel: AMQPChannel): Promise<void> {
+        if (channel.connection.closed) {
+            await this.reconnect();
         }
     }
 
-    private static isSocketError(error: any): boolean {
-        return error && error.code === 'ERR_STREAM_DESTROYED';
+    private async reconnect(): Promise<void> {
+        this.isReconnecting = true;
+        // reconnect for all connections
+        // try to close first
+        logger.warn('trying to close current connection');
+        try {
+            await this._publisherConnection.close();
+        } catch (err) {
+            logger.warn(err);
+        }
+
+        try {
+            await this._consumerConnection.close();
+        } catch (err) {
+            logger.warn(err);
+        }
+        logger.warn('trying to reconnect');
+        await this.connect(true);
+        await this.connect();
+
+        logger.warn('connected successfully, trying to recreate channels');
+        for (const [exchangeName, publisherSetting] of this.publishers.entries()) {
+            await this.initPublisher(exchangeName, publisherSetting.exchangeType);
+        }
+        for (const [queueName, queueSetting] of this.queues.entries()) {
+            await this.initConsumer(queueSetting.exchangeName, queueSetting.exchangeType, queueName, queueSetting.bindingKey, queueSetting.prefetch);
+            this.consumers.get(queueName).consumer = await this.subscribeConsumer(queueSetting.queueInstance);
+        }
+        this.isReconnecting = false;
     }
 }
