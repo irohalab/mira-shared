@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+export * from './services/AmqplibImpl';
 export * from './services/RabbitMQService';
 export * from './services/BaseDatabaseService';
 export * from './services/BasicDatabaseServiceImpl';

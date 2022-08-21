@@ -23,6 +23,11 @@
     chalk "^2.0.0"
     js-tokens "^4.0.0"
 
+"@cloudamqp/amqp-client@^2.1.0":
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/@cloudamqp/amqp-client/-/amqp-client-2.1.0.tgz#0c763fd20327d29dfef8b7ab10d36cb63da12876"
+  integrity sha512-2dPPvsSpFFjX73zfpaRBL1abm6M3AdZmuJibDKZAvG+li9+yyALLmQ/7s3qN6n4aFPAHU4RThL7NK+qPUU3/Lw==
+
 "@cspotcode/source-map-consumer@0.8.0":
   version "0.8.0"
   resolved "https://registry.yarnpkg.com/@cspotcode/source-map-consumer/-/source-map-consumer-0.8.0.tgz#33bf4b7b39c178821606f669bbc447a6a629786b"

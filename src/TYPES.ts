@@ -20,7 +20,8 @@
 export const TYPES = {
     ConfigManager: Symbol.for('ConfigManager'),
     DatabaseService: Symbol.for('DatabaseService'),
-    Sentry: Symbol.for('Sentry')
+    Sentry: Symbol.for('Sentry'),
+    RabbitMQService: Symbol.for('RabbitMQService')
 };
 
 /**
