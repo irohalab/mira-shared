@@ -25,6 +25,7 @@ import { AMQPBaseClient } from '@cloudamqp/amqp-client/types/amqp-base-client';
 import { AMQPChannel, AMQPClient, AMQPConsumer, AMQPError, AMQPMessage, AMQPQueue } from '@cloudamqp/amqp-client';
 import pino from 'pino';
 import { Message } from '../entity/Message';
+import { inspect } from 'util';
 
 const logger = pino({
     timestamp: pino.stdTimeFunctions.isoTime
@@ -109,7 +110,7 @@ export class AmqpClientJSImpl implements RabbitMQService {
                 };
             }
         } catch (error) {
-            logger.error(error);
+            logger.error(inspect(error, {depth: 3}));
             this._sentry.capture(error);
             logger.info('failed to connect to amqp server, will reconnect in 5s...');
             setTimeout(() => {
@@ -131,7 +132,7 @@ export class AmqpClientJSImpl implements RabbitMQService {
             consumer.wait().then(() => {
                 logger.info('consumer canceled by client');
             }).catch((err) => {
-                logger.error(err);
+                logger.error(inspect(err, {depth: 3}));
                 this._sentry.capture(err);
                 this.checkChannelStatus(consumer.channel);
             });
@@ -157,7 +158,7 @@ export class AmqpClientJSImpl implements RabbitMQService {
                 }
             });
         } catch (error) {
-            logger.error(error);
+            logger.error(inspect(error, {depth: 3}));
             this._sentry.capture(error);
             await this.checkChannelStatus(consumerSetting.consumer.channel);
             return null;
@@ -194,7 +195,7 @@ export class AmqpClientJSImpl implements RabbitMQService {
                 queueInstance
             });
         } catch (error) {
-            logger.error(error);
+            logger.error(inspect(error, {depth: 3}));
             this._sentry.capture(error);
         }
     }
@@ -217,7 +218,7 @@ export class AmqpClientJSImpl implements RabbitMQService {
                 channel
             })
         } catch (error) {
-            logger.error(error);
+            logger.error(inspect(error, {depth: 3}));
             this._sentry.capture(error);
         }
     }
@@ -228,7 +229,7 @@ export class AmqpClientJSImpl implements RabbitMQService {
             await publisher.channel.basicPublish(exchangeName, routingKey, JSON.stringify(message));
         } catch (error) {
             // not ack
-            logger.error(error);
+            logger.error(inspect(error, {depth: 3}));
             // this._sentry.capture(error);
             await this.saveMessage(exchangeName, routingKey, message);
             await this.checkChannelStatus(publisher.channel);
