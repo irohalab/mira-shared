@@ -91,9 +91,6 @@ export class AmqpClientJSImpl implements RabbitMQService {
                 this._publisherConnection = await client.connect();
                 this._publisherConnection.onerror = (error) => {
                     logger.error(error);
-                    if (!this.isReconnecting) {
-                        this.reconnect();
-                    }
                 };
                 // try resend message
                 if (this.resendMessageRepeatTimerId) {
@@ -104,9 +101,6 @@ export class AmqpClientJSImpl implements RabbitMQService {
                 this._consumerConnection = await client.connect();
                 this._consumerConnection.onerror = (error) => {
                     logger.error(error);
-                    if (!this.isReconnecting) {
-                        this.reconnect();
-                    }
                 };
             }
         } catch (error) {
@@ -270,7 +264,7 @@ export class AmqpClientJSImpl implements RabbitMQService {
     }
 
     private async checkChannelStatus(channel: AMQPChannel): Promise<void> {
-        if (channel.connection.closed) {
+        if (channel.connection.closed && !this.isReconnecting) {
             await this.reconnect();
         }
     }
