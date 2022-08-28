@@ -105,7 +105,6 @@ export class AmqpClientJSImpl implements RabbitMQService {
             }
         } catch (error) {
             logger.error(inspect(error, {depth: 3}));
-            this._sentry.capture(error);
             logger.info('failed to connect to amqp server, will reconnect in 5s...');
             setTimeout(() => {
                 this.connect(connectPublisher);
@@ -127,7 +126,6 @@ export class AmqpClientJSImpl implements RabbitMQService {
                 logger.info('consumer canceled by client');
             }).catch((err) => {
                 logger.error(inspect(err, {depth: 3}));
-                this._sentry.capture(err);
                 this.checkChannelStatus(consumer.channel);
             });
             return consumer.tag;
@@ -153,7 +151,6 @@ export class AmqpClientJSImpl implements RabbitMQService {
             });
         } catch (error) {
             logger.error(inspect(error, {depth: 3}));
-            this._sentry.capture(error);
             await this.checkChannelStatus(consumerSetting.consumer.channel);
             return null;
         }
@@ -190,7 +187,6 @@ export class AmqpClientJSImpl implements RabbitMQService {
             });
         } catch (error) {
             logger.error(inspect(error, {depth: 3}));
-            this._sentry.capture(error);
         }
     }
 
@@ -213,7 +209,6 @@ export class AmqpClientJSImpl implements RabbitMQService {
             })
         } catch (error) {
             logger.error(inspect(error, {depth: 3}));
-            this._sentry.capture(error);
         }
     }
 
