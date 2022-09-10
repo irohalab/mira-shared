@@ -16,7 +16,7 @@
 
 import { RabbitMQService } from './RabbitMQService';
 import { MQMessage } from '../domain/MQMessage';
-import { inject } from 'inversify';
+import { inject, injectable } from 'inversify';
 import { TYPES } from '../TYPES';
 import { BaseConfigManager } from '../utils/BaseConfigManager';
 import { AckOrNack, BrokerAsPromised, BrokerConfig, withDefaultConfig } from 'rascal';
@@ -26,6 +26,7 @@ import { Message } from 'amqplib';
 
 const logger = pino();
 
+@injectable()
 export class RascalImpl implements RabbitMQService {
     private _broker: BrokerAsPromised
     private _brokerConfig: BrokerConfig;
