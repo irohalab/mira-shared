@@ -31,6 +31,7 @@ import { RabbitMQService } from './services/RabbitMQService';
 import { AmqpClientJSImpl } from './services/AmqpClientJSImpl';
 import { createReadStream, readFileSync, writeFileSync } from 'fs';
 import { join } from 'path';
+import { RascalImpl } from './services/RascalImpl';
 
 const logger = pino({
     timestamp: pino.stdTimeFunctions.isoTime
@@ -48,8 +49,10 @@ sentry.setup(`mira_shared_e2e_${hostname()}`, version, __dirname);
 container.bind<ConfigManager>(TYPES.ConfigManager).to(ConfigManagerImpl).inSingletonScope();
 if (process.env.AMQP_CLIENT === 'amqplib') {
     container.bind<RabbitMQService>(TYPES.RabbitMQService).to(AmqplibImpl).inSingletonScope();
-} else {
+} else if (process.env.AMQP_CLIENT === 'amqp-client.js') {
     container.bind<RabbitMQService>(TYPES.RabbitMQService).to(AmqpClientJSImpl).inSingletonScope();
+} else {
+    container.bind<RabbitMQService>(TYPES.RabbitMQService).to(RascalImpl).inSingletonScope();
 }
 
 container.bind<RabbitMQE2EService>(RabbitMQE2EService).toSelf().inSingletonScope();
