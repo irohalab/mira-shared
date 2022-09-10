@@ -23,6 +23,7 @@ import { AckOrNack, BrokerAsPromised, BrokerConfig, withDefaultConfig } from 'ra
 import pino from 'pino';
 import { Sentry } from '../utils/Sentry';
 import { Message } from 'amqplib';
+import { getVhostFromUrl } from '../utils/amqp-utils';
 
 const logger = pino();
 
@@ -30,12 +31,14 @@ const logger = pino();
 export class RascalImpl implements RabbitMQService {
     private _broker: BrokerAsPromised
     private _brokerConfig: BrokerConfig;
+    private _vhost: string;
 
     constructor(@inject(TYPES.ConfigManager) private _config: BaseConfigManager,
                 @inject(TYPES.Sentry) private _sentry: Sentry) {
+        this._vhost = getVhostFromUrl(this._config.amqpServerUrl());
         this._brokerConfig = {
             vhosts: {
-                '/': {
+                [this._vhost]: {
                     connection: {
                         url: this._config.amqpServerUrl()
                     },
@@ -49,6 +52,7 @@ export class RascalImpl implements RabbitMQService {
     }
 
     private async createBroker(): Promise<void> {
+
         this._broker = await BrokerAsPromised.create(withDefaultConfig(this._brokerConfig));
         this._broker.on('error', (error: any) => {
             logger.error(error);
@@ -56,6 +60,9 @@ export class RascalImpl implements RabbitMQService {
     }
 
     public async consume(queueName: string, onMessage: (msg: MQMessage) => Promise<boolean>): Promise<string> {
+        if (!this._broker) {
+            await this.createBroker();
+        }
         try {
             const subscription = await this._broker.subscribe(queueName);
             subscription.on('message', async (message: Message, content: any, ackOrNackFn: AckOrNack) => {
@@ -74,16 +81,12 @@ export class RascalImpl implements RabbitMQService {
     }
 
     public initConsumer(exchangeName: string, exchangeType: string, queueName: string, bindingKey?: string, prefetch?: boolean): Promise<void> {
-        this._brokerConfig.vhosts['/'].queues[queueName] = {
+        this.ensureExchange(exchangeName, exchangeType);
+        this._brokerConfig.vhosts[this._vhost].queues[queueName] = {
             assert: false,
             check: true
         }
-        this._brokerConfig.vhosts['/'].publications[RascalImpl.getPublicationName(exchangeName, bindingKey)] = {
-            exchange: exchangeName,
-            routingKey: bindingKey,
-            confirm: true
-        };
-        this._brokerConfig.vhosts['/'].subscriptions[queueName] = {
+        this._brokerConfig.vhosts[this._vhost].subscriptions[queueName] = {
             queue: queueName,
             contentType: 'application/json',
             prefetch: prefetch ? 1 : 0
@@ -92,15 +95,12 @@ export class RascalImpl implements RabbitMQService {
     }
 
     public initPublisher(exchangeName: string, exchangeType: string): Promise<void> {
-        this._brokerConfig.vhosts['/'].exchanges[exchangeName] = {
-            type: exchangeType,
-            assert: false,
-            check: true
-        };
+        this.ensureExchange(exchangeName, exchangeType);
         return Promise.resolve(undefined);
     }
 
     public async publish(exchangeName: string, routingKey: string, message: any): Promise<boolean> {
+        this.preparePublisher(exchangeName, routingKey);
         if (!this._broker) {
             await this.createBroker();
         }
@@ -131,5 +131,21 @@ export class RascalImpl implements RabbitMQService {
 
     private static getPublicationName(exchangeName: string, routingKey?: string): string {
         return routingKey ? exchangeName + '_' + routingKey: exchangeName;
+    }
+
+    private ensureExchange(exchangeName: string, exchangeType: string): void {
+        this._brokerConfig.vhosts[this._vhost].exchanges[exchangeName] = {
+            type: exchangeType,
+            assert: false,
+            check: true
+        };
+    }
+
+    private preparePublisher(exchangeName: string, bindingKey: string): void {
+        this._brokerConfig.vhosts[this._vhost].publications[RascalImpl.getPublicationName(exchangeName, bindingKey)] = {
+            exchange: exchangeName,
+            routingKey: bindingKey,
+            confirm: true
+        };
     }
 }
