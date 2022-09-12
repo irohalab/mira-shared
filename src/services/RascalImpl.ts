@@ -72,6 +72,9 @@ export class RascalImpl implements RabbitMQService {
                     ackOrNackFn(new Error('Nack-ed by consumer'));
                 }
             });
+            subscription.on('error', (error) => {
+                logger.error(error);
+            });
         } catch (error) {
             // subscription didn't exists
             logger.error(error);
