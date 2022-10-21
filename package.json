@@ -26,6 +26,7 @@
       "inversify-logger-middleware": "^3.1.0",
       "pg": "^8.4.0",
       "pino": "^7.6.2",
+      "rascal": "^15.0.0",
       "reflect-metadata": "^0.1.10",
       "uuid": "^8.3.2"
    },
@@ -33,6 +34,7 @@
       "@types/amqplib": "^0.8.0",
       "@types/express": "^4.17.13",
       "@types/node": "^16.3.3",
+      "@types/rascal": "^10.0.6",
       "@types/supertest": "^2.0.11",
       "ava": "^4.2.0",
       "cross-env": "^7.0.3",
