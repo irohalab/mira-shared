@@ -15,7 +15,6 @@
  */
 
 import { MessageRepository } from '../repository/MessageRepository';
-import { EntityManager } from '@mikro-orm/postgresql';
 import { NextFunction, Request, Response } from 'express';
 
 export interface BaseDatabaseService {
@@ -23,4 +22,15 @@ export interface BaseDatabaseService {
     stop(): Promise<void>;
     requestContextMiddleware(): (req: Request, res: Response, next: NextFunction) => void;
     getMessageRepository(): MessageRepository;
+
+    /**
+     * Return currently schema base on current entities
+     */
+    generateSchema(): Promise<string>;
+
+    /**
+     * Drop current schema and generate new schema base on entities.
+     * Should only be used in the first init in production environment.
+     */
+    syncSchema(): Promise<void>;
 }

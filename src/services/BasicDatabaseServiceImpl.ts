@@ -75,4 +75,15 @@ export class BasicDatabaseServiceImpl implements BaseDatabaseService {
     public requestContextMiddleware(): (req: Request, res: Response, next: NextFunction) => void {
         return (req: Request, res: Response, next: NextFunction) => RequestContext.create(this._em, next);
     }
+
+    public async generateSchema(): Promise<string> {
+        const generator = this._ormHelper.getSchemaGenerator();
+        return await generator.getCreateSchemaSQL();
+    }
+
+    public async syncSchema(): Promise<void> {
+        const generator = this._ormHelper.getSchemaGenerator();
+        await generator.dropSchema();
+        await generator.createSchema();
+    }
 }
