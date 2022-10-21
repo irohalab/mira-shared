@@ -40,4 +40,12 @@ export class FakeDatabaseService implements BaseDatabaseService {
         return function (p1: Request, p2: Response, p3: NextFunction) {
         };
     }
+
+    public generateSchema(): Promise<string> {
+        return Promise.resolve('');
+    }
+
+    public syncSchema(): Promise<void> {
+        return Promise.resolve(undefined);
+    }
 }
