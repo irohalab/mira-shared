@@ -35,13 +35,15 @@ export class RascalImpl implements RabbitMQService {
 
     constructor(@inject(TYPES.ConfigManager) private _config: BaseConfigManager,
                 @inject(TYPES.Sentry) private _sentry: Sentry) {
-        this._vhost = getVhostFromUrl(this._config.amqpServerUrl());
+        if (this._config.amqpServerUrl()) {
+            this._vhost = getVhostFromUrl(this._config.amqpServerUrl());
+        } else {
+            this._vhost = this._config.amqpConfig().vhost;
+        }
+
         this._brokerConfig = {
             vhosts: {
                 [this._vhost]: {
-                    connection: {
-                        url: this._config.amqpServerUrl()
-                    },
                     exchanges: {},
                     queues: {},
                     publications: {},
@@ -49,6 +51,23 @@ export class RascalImpl implements RabbitMQService {
                 }
             }
         };
+
+        if (this._config.amqpServerUrl()) {
+            this._brokerConfig.vhosts[this._vhost]['connection'] = { url: this._config.amqpServerUrl() };
+        } else {
+            const amqpConfig = this._config.amqpConfig();
+            this._brokerConfig.vhosts[this._vhost]['connection'] = {
+                protocol: 'amqp',
+                hostname: amqpConfig.hostname,
+                user: amqpConfig.username,
+                password: amqpConfig.password,
+                port: amqpConfig.port,
+                vhost: amqpConfig.vhost,
+                options: {
+                    heartbeat: amqpConfig.heartbeat
+                }
+            }
+        }
     }
 
     private async createBroker(): Promise<void> {
