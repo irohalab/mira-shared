@@ -116,13 +116,13 @@ export class RascalImpl implements RabbitMQService {
         return Promise.resolve(undefined);
     }
 
-    public initPublisher(exchangeName: string, exchangeType: string): Promise<void> {
+    public initPublisher(exchangeName: string, exchangeType: string, routingKey?: string): Promise<void> {
         this.ensureExchange(exchangeName, exchangeType);
+        this.preparePublisher(exchangeName, routingKey);
         return Promise.resolve(undefined);
     }
 
     public async publish(exchangeName: string, routingKey: string, message: any): Promise<boolean> {
-        this.preparePublisher(exchangeName, routingKey);
         if (!this._broker) {
             await this.createBroker();
         }
@@ -156,11 +156,13 @@ export class RascalImpl implements RabbitMQService {
     }
 
     private ensureExchange(exchangeName: string, exchangeType: string): void {
-        this._brokerConfig.vhosts[this._vhost].exchanges[exchangeName] = {
-            type: exchangeType,
-            assert: false,
-            check: true
-        };
+        if (!this._brokerConfig.vhosts[this._vhost].exchanges[exchangeName]) {
+            this._brokerConfig.vhosts[this._vhost].exchanges[exchangeName] = {
+                type: exchangeType,
+                assert: false,
+                check: true
+            };
+        }
     }
 
     private preparePublisher(exchangeName: string, bindingKey: string): void {

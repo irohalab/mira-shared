@@ -100,7 +100,7 @@ export class AmqplibImpl implements RabbitMQService {
         }, 5000);
     };
 
-    public async initPublisher(exchangeName: string, exchangeType: string): Promise<void> {
+    public async initPublisher(exchangeName: string, exchangeType: string, routingKey?: string): Promise<void> {
         const channel = await this.addChannel(exchangeName, exchangeType);
         await channel.assertExchange(exchangeName, exchangeType);
     }

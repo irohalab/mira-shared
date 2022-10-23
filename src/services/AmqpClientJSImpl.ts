@@ -190,7 +190,7 @@ export class AmqpClientJSImpl implements RabbitMQService {
         }
     }
 
-    public async initPublisher(exchangeName: string, exchangeType: string): Promise<void> {
+    public async initPublisher(exchangeName: string, exchangeType: string, routingKey?: string): Promise<void> {
         if (!this._publisherConnection || this._publisherConnection.closed) {
             await this.connect(true);
         }
