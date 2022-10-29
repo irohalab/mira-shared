@@ -88,7 +88,7 @@ export class RascalImpl implements RabbitMQService {
                 if (await onMessage(content as MQMessage)) {
                     ackOrNackFn();
                 } else {
-                    ackOrNackFn(new Error('Nack-ed by consumer'));
+                    ackOrNackFn(new Error('Nack-ed by consumer'), { strategy: 'nack', defer: 1000, requeue: true});
                 }
             });
             subscription.on('error', (error) => {
