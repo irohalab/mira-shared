@@ -46,6 +46,7 @@ export class RascalImpl implements RabbitMQService {
                 [this._vhost]: {
                     exchanges: {},
                     queues: {},
+                    bindings: {},
                     publications: {},
                     subscriptions: {}
                 }
@@ -108,6 +109,12 @@ export class RascalImpl implements RabbitMQService {
             assert: false,
             check: true
         }
+        this._brokerConfig.vhosts[this._vhost].bindings[RascalImpl.getBindingName(exchangeName, queueName, bindingKey)] = {
+            source: exchangeName,
+            destination: queueName,
+            destinationType: 'queue',
+            bindingKeys: [bindingKey]
+        };
         this._brokerConfig.vhosts[this._vhost].subscriptions[queueName] = {
             queue: queueName,
             contentType: 'application/json',
@@ -153,6 +160,10 @@ export class RascalImpl implements RabbitMQService {
 
     private static getPublicationName(exchangeName: string, routingKey?: string): string {
         return routingKey ? exchangeName + '_' + routingKey: exchangeName;
+    }
+
+    private static getBindingName(exchangeName: string, queueName: string, bindingKey: string): string {
+        return exchangeName + '_' + queueName + '_' + bindingKey;
     }
 
     private ensureExchange(exchangeName: string, exchangeType: string): void {
