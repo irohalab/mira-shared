@@ -106,8 +106,8 @@ export class RascalImpl implements RabbitMQService {
     public initConsumer(exchangeName: string, exchangeType: string, queueName: string, bindingKey?: string, prefetch?: boolean): Promise<void> {
         this.ensureExchange(exchangeName, exchangeType);
         this._brokerConfig.vhosts[this._vhost].queues[queueName] = {
-            assert: false,
-            check: true
+            assert: true,
+            check: false
         }
         this._brokerConfig.vhosts[this._vhost].bindings[RascalImpl.getBindingName(exchangeName, queueName, bindingKey)] = {
             source: exchangeName,
@@ -170,8 +170,8 @@ export class RascalImpl implements RabbitMQService {
         if (!this._brokerConfig.vhosts[this._vhost].exchanges[exchangeName]) {
             this._brokerConfig.vhosts[this._vhost].exchanges[exchangeName] = {
                 type: exchangeType,
-                assert: false,
-                check: true
+                assert: true,
+                check: false
             };
         }
     }
