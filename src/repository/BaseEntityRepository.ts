@@ -16,7 +16,7 @@
 
 import { EntityRepository } from '@mikro-orm/postgresql';
 
-export abstract class BaseEntityRepository<E> extends EntityRepository<E> {
+export abstract class BaseEntityRepository<E extends object> extends EntityRepository<E> {
     public async save(entities: E | E[]): Promise<E | E[]> {
         if (Array.isArray(entities)) {
             entities = entities.map(entity => this.create(entity));

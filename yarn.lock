@@ -48,34 +48,35 @@
   dependencies:
     "@cspotcode/source-map-consumer" "0.8.0"
 
-"@mikro-orm/core@^5.1.3":
-  version "5.1.3"
-  resolved "https://registry.yarnpkg.com/@mikro-orm/core/-/core-5.1.3.tgz#3caaab21cc81f8d4002ce93bfb0a76e2b5525143"
-  integrity sha512-N10ejP9EraJ5icnfjjR5v+8X5VE6fu31W5R3gi6Gd/FOsqUmUx2KEGTEA6j4f6PDstX1tKCyo9G+98LfNwmr4A==
+"@mikro-orm/core@^5.5.3":
+  version "5.5.3"
+  resolved "https://registry.yarnpkg.com/@mikro-orm/core/-/core-5.5.3.tgz#8c9ed8ee3997a51fd47a1e6f4be32dd10189c026"
+  integrity sha512-/iQ6YKDp8EfTYibAOTkvW44uIc3qk0N+VSsUqMtO3sjb5Y2C6B+Wz4E1Qjb+oSeZtvWZn469HMCiOTgdMl6KSw==
   dependencies:
-    dotenv "16.0.0"
-    escaya "0.0.61"
+    acorn-loose "8.3.0"
+    acorn-walk "8.2.0"
+    dotenv "16.0.3"
     fs-extra "10.1.0"
     globby "11.0.4"
-    mikro-orm "^5.1.2"
+    mikro-orm "^5.5.3"
     reflect-metadata "0.1.13"
 
-"@mikro-orm/knex@^5.1.3":
-  version "5.1.3"
-  resolved "https://registry.yarnpkg.com/@mikro-orm/knex/-/knex-5.1.3.tgz#d93cd67961cd494dc00d2de3550e0f12b13f6755"
-  integrity sha512-wBJsvETrx6NIdThBrrUk49kLrPY1PyL9R+su9D3b/oIfdB2W3m+KaUu8ybju0rB2K26giWNONtbyd9eKd8PrIw==
+"@mikro-orm/knex@^5.5.3":
+  version "5.5.3"
+  resolved "https://registry.yarnpkg.com/@mikro-orm/knex/-/knex-5.5.3.tgz#0319105be81fce26b6a44804ae19cf0ba518baab"
+  integrity sha512-vimh9DLsXwauuQj7Lrr70RP9tESIm4LB1BpUwMsj/6qRBaEBefV/BVQzPFDKUOe3bghB4kTEHAdJ7qCnpg1Byw==
   dependencies:
     fs-extra "10.1.0"
-    knex "2.0.0"
+    knex "2.3.0"
     sqlstring "2.3.3"
 
-"@mikro-orm/postgresql@^5.1.3":
-  version "5.1.3"
-  resolved "https://registry.yarnpkg.com/@mikro-orm/postgresql/-/postgresql-5.1.3.tgz#02fb213495972f0535486fc5ba3ad2ee41f8bf6a"
-  integrity sha512-LveqSAsv75QNLq5h+pUtpQOfuNHYMvr1M0FtWXnQ3HkEyANinvZ+Sudeyz0W2lzGpv3mmDx3OxpfJFQVx788Og==
+"@mikro-orm/postgresql@^5.5.3":
+  version "5.5.3"
+  resolved "https://registry.yarnpkg.com/@mikro-orm/postgresql/-/postgresql-5.5.3.tgz#5a7af2933a0adf434c41e13e1a2881d8ee93aacc"
+  integrity sha512-9rJEDT6nfkHOyP4p25AOYbgTkjrlXHlm8e+u1FFW2CZKpdxpmH3hiY5H1x8muOI/fvHP7njt2Da71i2MXakw0g==
   dependencies:
-    "@mikro-orm/knex" "^5.1.3"
-    pg "8.7.3"
+    "@mikro-orm/knex" "^5.5.3"
+    pg "8.8.0"
 
 "@nodelib/fs.scandir@2.1.5":
   version "2.1.5"
@@ -272,7 +273,14 @@
   dependencies:
     "@types/superagent" "*"
 
-acorn-walk@^8.1.1, acorn-walk@^8.2.0:
+acorn-loose@8.3.0:
+  version "8.3.0"
+  resolved "https://registry.yarnpkg.com/acorn-loose/-/acorn-loose-8.3.0.tgz#0cd62461d21dce4f069785f8d3de136d5525029a"
+  integrity sha512-75lAs9H19ldmW+fAbyqHdjgdCrz0pWGXKmnqFoh8PyVd1L2RIb4RzYrSjmopeqv3E1G3/Pimu6GgLlrGbrkF7w==
+  dependencies:
+    acorn "^8.5.0"
+
+acorn-walk@8.2.0, acorn-walk@^8.1.1, acorn-walk@^8.2.0:
   version "8.2.0"
   resolved "https://registry.yarnpkg.com/acorn-walk/-/acorn-walk-8.2.0.tgz#741210f2e2426454508853a2f44d0ab83b7f69c1"
   integrity sha512-k+iyHEuPgSw6SbuDpGQM+06HQUa04DZ3o+F6CSzXMvvI5KMvnaEqXe+YVe555R9nn6GPt404fos4wcgpw12SDA==
@@ -281,6 +289,11 @@ acorn@^8.4.1, acorn@^8.7.0:
   version "8.7.1"
   resolved "https://registry.yarnpkg.com/acorn/-/acorn-8.7.1.tgz#0197122c843d1bf6d0a5e83220a788f278f63c30"
   integrity sha512-Xx54uLJQZ19lKygFXOWsscKUbsBZW0CPykPhVQdhIeIwrbPmJzqeASDInc8nKBnp/JT6igTs82qPXz069H8I/A==
+
+acorn@^8.5.0:
+  version "8.8.1"
+  resolved "https://registry.yarnpkg.com/acorn/-/acorn-8.8.1.tgz#0a3f9cbecc4ec3bea6f0a80b66ae8dd2da250b73"
+  integrity sha512-7zFpHzhnqYKrkYdUjF1HI1bzd0VygEGX8lFk4k5zVMqHEoES+P+7TKI+EvLO9WVMJ8eekdO0aDEK044xTXwPPA==
 
 agent-base@6:
   version "6.0.2"
@@ -654,10 +667,10 @@ color-name@~1.1.4:
   resolved "https://registry.yarnpkg.com/color-name/-/color-name-1.1.4.tgz#c2a09a87acbde69543de6f63fa3995c826c536a2"
   integrity sha512-dOy+3AuW3a2wNbZHIuMZpTcgjGuLU/uBL/ubcZF9OXbDo8ff4O8yVp5Bf0efS8uEoYo5q4Fx7dY9OgQGXgAsQA==
 
-colorette@2.0.16:
-  version "2.0.16"
-  resolved "https://registry.yarnpkg.com/colorette/-/colorette-2.0.16.tgz#713b9af84fdb000139f04546bd4a93f62a5085da"
-  integrity sha512-hUewv7oMjCp+wkBv5Rm0v87eJhq4woh5rSR+42YSQJKecCqgIqNkZ6lAlQms/BwHPJA5NKMRlpxPRv0n8HQW6g==
+colorette@2.0.19:
+  version "2.0.19"
+  resolved "https://registry.yarnpkg.com/colorette/-/colorette-2.0.19.tgz#cdf044f47ad41a0f4b56b3a0d5b4e6e1a2d5a798"
+  integrity sha512-3tlv/dIP7FWvj3BsbHrGLJ6l/oKh1O3TcgBqMn+yyCagOxc23fyzDS6HypQbgxWbkpDnf52p1LuR4eWDQ/K9WQ==
 
 combined-stream@^1.0.8:
   version "1.0.8"
@@ -818,10 +831,10 @@ dir-glob@^3.0.1:
   dependencies:
     path-type "^4.0.0"
 
-dotenv@16.0.0:
-  version "16.0.0"
-  resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-16.0.0.tgz#c619001253be89ebb638d027b609c75c26e47411"
-  integrity sha512-qD9WU0MPM4SWLPJy/r2Be+2WgQj8plChsyrCNQzW/0WjvcJQiKQJ9mH3ZgB3fxbUUxgc/11ZJ0Fi5KiimWGz2Q==
+dotenv@16.0.3:
+  version "16.0.3"
+  resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-16.0.3.tgz#115aec42bac5053db3c456db30cc243a5a836a07"
+  integrity sha512-7GO6HghkA5fYG9TYnNxi14/7K9f5occMlp3zXAuSxn7CKCxt9xbNWG7yF8hTCSUchlfWSe3uLmlPfigevRItzQ==
 
 duplexify@^4.1.2:
   version "4.1.2"
@@ -879,11 +892,6 @@ escape-string-regexp@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/escape-string-regexp/-/escape-string-regexp-2.0.0.tgz#a30304e99daa32e23b2fd20f51babd07cffca344"
   integrity sha512-UpzcLCXolUWcNu5HtVMHYdXJjArjsF9C0aNnquZYY4uW/Vu0miy5YoWvbV345HauVvcAUnpRuhMMcqTcGOY2+w==
-
-escaya@0.0.61:
-  version "0.0.61"
-  resolved "https://registry.yarnpkg.com/escaya/-/escaya-0.0.61.tgz#f87a89dd43d877c86b06b55b78b7a465cd2c5c3a"
-  integrity sha512-WLLmvdG72Z0pCq8XUBd03GEJlAiMceXFanjdQeEzeSiuV1ZgrJqbkU7ZEe/hu0OsBlg5wLlySEeOvfzcGoO8mg==
 
 esm@^3.2.25:
   version "3.2.25"
@@ -1310,12 +1318,12 @@ jsonfile@^6.0.1:
   optionalDependencies:
     graceful-fs "^4.1.6"
 
-knex@2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/knex/-/knex-2.0.0.tgz#84296ced7ef27e0f3b954302ac7d9da67c28b5d3"
-  integrity sha512-LchC8/GLfreMz8d4kCwh/ymXttsoJG8zO1O0AJBjnxdyr2oT/k2ik77hP1PpZkZH9mDQrq6WsQcIu18Pnqppzg==
+knex@2.3.0:
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/knex/-/knex-2.3.0.tgz#87fa2a9553d7cafb125d7a0645256fbe29ef5967"
+  integrity sha512-WMizPaq9wRMkfnwKXKXgBZeZFOSHGdtoSz5SaLAVNs3WRDfawt9O89T4XyH52PETxjV8/kRk0Yf+8WBEP/zbYw==
   dependencies:
-    colorette "2.0.16"
+    colorette "2.0.19"
     commander "^9.1.0"
     debug "4.3.4"
     escalade "^3.1.1"
@@ -1416,10 +1424,10 @@ micromatch@^4.0.4:
     braces "^3.0.1"
     picomatch "^2.2.3"
 
-mikro-orm@^5.1.2:
-  version "5.1.2"
-  resolved "https://registry.yarnpkg.com/mikro-orm/-/mikro-orm-5.1.2.tgz#d6f10d6f4d55b26a5bc193bc13b4a970d147497b"
-  integrity sha512-Qyy+EZeBRiyzLstX9Ug9vyDvmz9SIgK4g/h4oMSjgv/VyMwboUuIi4NSXc8HqrpolTdotmcsEzM3d23DUZYSsQ==
+mikro-orm@^5.5.3:
+  version "5.5.3"
+  resolved "https://registry.yarnpkg.com/mikro-orm/-/mikro-orm-5.5.3.tgz#919966413115980c837bef2407d5f21eb87c5d43"
+  integrity sha512-aF2FfyB4OI+1LEXM57mPFfpj/OpmghGZq4Hmi4kHB6920GyqeruBYLMiFkT7MflHVgLCfj+2tZV8+uBsGWBEDQ==
 
 mime-db@1.52.0:
   version "1.52.0"
@@ -1599,6 +1607,11 @@ pg-pool@^3.5.1:
   resolved "https://registry.yarnpkg.com/pg-pool/-/pg-pool-3.5.1.tgz#f499ce76f9bf5097488b3b83b19861f28e4ed905"
   integrity sha512-6iCR0wVrro6OOHFsyavV+i6KYL4lVNyYAB9RD18w66xSzN+d8b66HiwuP30Gp1SH5O9T82fckkzsRjlrhD0ioQ==
 
+pg-pool@^3.5.2:
+  version "3.5.2"
+  resolved "https://registry.yarnpkg.com/pg-pool/-/pg-pool-3.5.2.tgz#ed1bed1fb8d79f1c6fd5fb1c99e990fbf9ddf178"
+  integrity sha512-His3Fh17Z4eg7oANLob6ZvH8xIVen3phEZh2QuyrIl4dQSDVEabNducv6ysROKpDNPSD+12tONZVWfSgMvDD9w==
+
 pg-protocol@^1.5.0:
   version "1.5.0"
   resolved "https://registry.yarnpkg.com/pg-protocol/-/pg-protocol-1.5.0.tgz#b5dd452257314565e2d54ab3c132adc46565a6a0"
@@ -1615,7 +1628,20 @@ pg-types@^2.1.0:
     postgres-date "~1.0.4"
     postgres-interval "^1.1.0"
 
-pg@8.7.3, pg@^8.4.0:
+pg@8.8.0:
+  version "8.8.0"
+  resolved "https://registry.yarnpkg.com/pg/-/pg-8.8.0.tgz#a77f41f9d9ede7009abfca54667c775a240da686"
+  integrity sha512-UXYN0ziKj+AeNNP7VDMwrehpACThH7LUl/p8TDFpEUuSejCUIwGSfxpHsPvtM6/WXFy6SU4E5RG4IJV/TZAGjw==
+  dependencies:
+    buffer-writer "2.0.0"
+    packet-reader "1.0.0"
+    pg-connection-string "^2.5.0"
+    pg-pool "^3.5.2"
+    pg-protocol "^1.5.0"
+    pg-types "^2.1.0"
+    pgpass "1.x"
+
+pg@^8.4.0:
   version "8.7.3"
   resolved "https://registry.yarnpkg.com/pg/-/pg-8.7.3.tgz#8a5bdd664ca4fda4db7997ec634c6e5455b27c44"
   integrity sha512-HPmH4GH4H3AOprDJOazoIcpI49XFsHCe8xlrjHkWiapdbHK+HLtbm/GQzXYAZwmPju/kzKhjaSfMACG+8cgJcw==
