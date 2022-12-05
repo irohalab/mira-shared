@@ -14,33 +14,32 @@
  * limitations under the License.
  */
 
-import { DateType, Entity, EntityRepositoryType, JsonType, PrimaryKey, Property } from '@mikro-orm/core';
+import { DateType, EntityRepositoryType, EntitySchema, JsonType, PrimaryKey, Property } from '@mikro-orm/core';
 import { MessageRepository } from '../repository/MessageRepository';
 import { randomUUID } from 'crypto';
 
-@Entity({ customRepository: () => MessageRepository })
 export class Message {
 
-    @PrimaryKey()
     public id: string = randomUUID();
 
-    @Property()
     public exchange: string;
 
-    @Property()
     public routingKey: string;
 
-    @Property({
-        columnType: 'json',
-        type: JsonType
-    })
     public content: any;
 
-    @Property({
-        columnType: 'timestamp',
-        type: DateType
-    })
     public enqueuedTime: Date;
 
     [EntityRepositoryType]?: MessageRepository;
 }
+
+export const schema = new EntitySchema<Message>({
+    class: Message,
+    properties: {
+        id: {type: 'uuid', primary: true},
+        exchange: {type: 'string'},
+        routingKey: {type: 'string'},
+        content: {type: JsonType},
+        enqueuedTime: {type: DateType}
+    }
+});
