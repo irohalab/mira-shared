@@ -35,6 +35,7 @@ export class Message {
 
 export const schema = new EntitySchema<Message>({
     class: Message,
+    customRepository: () => MessageRepository,
     properties: {
         id: {type: 'uuid', primary: true},
         exchange: {type: 'string'},
