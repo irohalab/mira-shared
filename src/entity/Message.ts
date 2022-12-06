@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { DateType, EntityRepositoryType, EntitySchema, JsonType, PrimaryKey, Property } from '@mikro-orm/core';
+import { DateType, EntityRepositoryType, EntitySchema, JsonType} from '@mikro-orm/core';
 import { MessageRepository } from '../repository/MessageRepository';
 import { randomUUID } from 'crypto';
 
