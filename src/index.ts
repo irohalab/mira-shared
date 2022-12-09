@@ -26,12 +26,9 @@ export * from './domain/VideoManagerMessage';
 export * from './domain/MQMessage';
 export * from './domain/RemoteFile';
 
-export * from './entity/Message';
-
 export * from './exceptions/TokenCheckException';
 export * from './exceptions/NotImplementException';
 
-export * from './repository/MessageRepository';
 export * from './repository/BaseEntityRepository';
 
 export * from './utils/BaseConfigManager';

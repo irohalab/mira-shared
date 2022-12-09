@@ -19,13 +19,12 @@ import { MQMessage } from '../domain/MQMessage';
 import { inject, injectable } from 'inversify';
 import { TYPES } from '../TYPES';
 import { BaseConfigManager } from '../utils/BaseConfigManager';
-import { BaseDatabaseService } from './BaseDatabaseService';
 import { Sentry } from '../utils/Sentry';
 import { AMQPBaseClient } from '@cloudamqp/amqp-client/types/amqp-base-client';
-import { AMQPChannel, AMQPClient, AMQPConsumer, AMQPError, AMQPMessage, AMQPQueue } from '@cloudamqp/amqp-client';
+import { AMQPChannel, AMQPClient, AMQPConsumer, AMQPMessage, AMQPQueue } from '@cloudamqp/amqp-client';
 import pino from 'pino';
-import { Message } from '../entity/Message';
 import { inspect } from 'util';
+import { MsgStore } from '../domain/MsgStore';
 
 const logger = pino({
     timestamp: pino.stdTimeFunctions.isoTime
@@ -74,9 +73,9 @@ export class AmqpClientJSImpl implements RabbitMQService {
     private saveMessageRetryTimerId: NodeJS.Timeout;
 
     private isReconnecting = false;
+    private messageStoreQ: MsgStore[] = [];
 
     constructor(@inject(TYPES.ConfigManager) private _configManager: BaseConfigManager,
-                @inject(TYPES.DatabaseService) private _databaseService: BaseDatabaseService,
                 @inject(TYPES.Sentry) private _sentry: Sentry) {
         this.publishers = new Map<string, PublisherSetting>();
         this.queues = new Map<string, QueueSetting>();
@@ -220,29 +219,22 @@ export class AmqpClientJSImpl implements RabbitMQService {
             // not ack
             logger.error(inspect(error, {depth: 3}));
             // this._sentry.capture(error);
-            await this.saveMessage(exchangeName, routingKey, message);
+            this.saveMessage(exchangeName, routingKey, message);
             await this.checkChannelStatus(publisher.channel);
         }
         return true;
     }
 
-    private async saveMessage(exchangeName: string, routingKey: string, content: any): Promise<void> {
-        const message = new Message();
+    private saveMessage(exchangeName: string, routingKey: string, content: any): void {
+        const message = {} as MsgStore;
         message.exchange = exchangeName;
         message.routingKey = routingKey;
         message.content = content;
-        try {
-            await this._databaseService.getMessageRepository().enqueueMessage(message);
-        } catch (error) {
-            logger.error(error);
-            this._sentry.capture(error);
-            this.saveMessageRetryTimerId = setTimeout(() => {this.saveMessage(exchangeName, routingKey, content)}, SAVE_MESSAGE_RETRY_INTERVAL);
-        }
+        this.messageStoreQ.push(message);
     }
 
     private async resendMessage(): Promise<void> {
-        const messageRepo = this._databaseService.getMessageRepository();
-        const message = await messageRepo.dequeueMessage();
+        const message = this.messageStoreQ.shift();
         if (message) {
             if (!this.publishers.has(message.exchange)) {
                 this.resendMessageRepeatTimerId = setTimeout(() => {

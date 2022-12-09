@@ -15,7 +15,6 @@
  */
 
 import { inject, injectable } from "inversify";
-import { MessageRepository } from '../repository/MessageRepository';
 import { BaseDatabaseService } from './BaseDatabaseService';
 import { BaseConfigManager } from '../utils/BaseConfigManager';
 import { TYPES } from '../TYPES';
@@ -23,7 +22,6 @@ import { promisify } from 'util';
 import pino from 'pino';
 import { MikroORM, RequestContext } from '@mikro-orm/core';
 import type { EntityManager, PostgreSqlDriver } from '@mikro-orm/postgresql';
-import { Message } from '../entity/Message';
 import { NextFunction, Request, Response } from 'express';
 
 const RETRY_DELAY = 5000;
@@ -66,10 +64,6 @@ export class BasicDatabaseServiceImpl implements BaseDatabaseService {
     public async stop(): Promise<void> {
         await this._ormHelper.close();
         return Promise.resolve(undefined);
-    }
-
-    public getMessageRepository(): MessageRepository {
-        return this._em.fork().getRepository(Message);
     }
 
     public requestContextMiddleware(): (req: Request, res: Response, next: NextFunction) => void {

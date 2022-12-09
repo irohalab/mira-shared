@@ -17,16 +17,10 @@
 
 import { injectable } from 'inversify';
 import { BaseDatabaseService } from '../services/BaseDatabaseService';
-import { FakeMessageRepository } from './FakeMessageRepository';
-import { EntityManager } from '@mikro-orm/postgresql';
-import { Request, Response, NextFunction } from 'express';
+import { NextFunction, Request, Response } from 'express';
 
 @injectable()
 export class FakeDatabaseService implements BaseDatabaseService {
-
-    getMessageRepository(): FakeMessageRepository {
-        return undefined;
-    }
 
     start(): Promise<void> {
         return Promise.resolve(undefined);

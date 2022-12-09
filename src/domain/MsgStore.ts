@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 IROHA LAB
+ * Copyright 2022 IROHA LAB
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,18 +14,8 @@
  * limitations under the License.
  */
 
-
-import { MessageRepository } from '../repository/MessageRepository';
-import { Message } from '../entity/Message';
-
-export class FakeMessageRepository extends MessageRepository {
-    mockQueue: Message[] = [];
-    async enqueueMessage(message: Message): Promise<void> {
-        this.mockQueue.push(message);
-    }
-
-    async dequeueMessage(): Promise<Message | null> {
-        const msg = this.mockQueue.shift();
-        return msg || null;
-    }
+export interface MsgStore {
+    exchange: string;
+    routingKey: string;
+    content: any;
 }

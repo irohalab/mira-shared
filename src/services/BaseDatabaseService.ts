@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 
-import { MessageRepository } from '../repository/MessageRepository';
 import { NextFunction, Request, Response } from 'express';
 
 export interface BaseDatabaseService {
     start(): Promise<void>;
     stop(): Promise<void>;
     requestContextMiddleware(): (req: Request, res: Response, next: NextFunction) => void;
-    getMessageRepository(): MessageRepository;
 
     /**
      * Return currently schema base on current entities

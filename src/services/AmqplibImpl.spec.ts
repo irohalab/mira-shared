@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
+import 'reflect-metadata';
 import test from 'ava';
 import { Container } from 'inversify';
 import { AmqplibImpl } from './AmqplibImpl';
 import { BaseConfigManager } from '../utils/BaseConfigManager';
 import { TYPES } from '../TYPES';
 import { FakeConfigManager } from '../test-helpers/FakeConfigManager';
-import { BaseDatabaseService } from './BaseDatabaseService';
-import { FakeDatabaseService } from '../test-helpers/FakeDatabaseService';
 import { DownloadMQMessage } from '../domain/DownloadMQMessage';
 import { v4 as uuid4 } from 'uuid';
 import { MQMessage } from '../domain/MQMessage';
@@ -37,7 +36,6 @@ class JobMessage {
 test.beforeEach( async (t) => {
     const container = new Container({ autoBindInjectable: true });
     container.bind<BaseConfigManager>(TYPES.ConfigManager).to(FakeConfigManager);
-    container.bind<BaseDatabaseService>(TYPES.DatabaseService).to(FakeDatabaseService);
     container.bind<FakeSentry>(TYPES.Sentry).to(FakeSentry);
     container.bind<RabbitMQService>(TYPES.RabbitMQService).to(AmqplibImpl);
     rabbitMQService = container.get<RabbitMQService>(TYPES.RabbitMQService);
