@@ -19,13 +19,12 @@ import { ConfirmChannel, connect, Connection } from 'amqplib';
 import { inject, injectable } from 'inversify';
 import { Buffer } from 'buffer';
 import { MQMessage } from '../domain/MQMessage';
-import { BaseDatabaseService } from './BaseDatabaseService';
-import { Message } from '../entity/Message';
 import { TYPES } from '../TYPES';
 import pino from 'pino';
 import { Sentry } from '../utils/Sentry';
 import { isFatalError } from 'amqplib/lib/connection';
 import { RabbitMQService } from './RabbitMQService';
+import { MsgStore } from '../domain/MsgStore';
 
 const logger = pino();
 const CHECK_INTERVAL = 5000;
@@ -53,9 +52,9 @@ export class AmqplibImpl implements RabbitMQService {
     private _queues = new Map<string, QueueSetting>();
     private _consumers = new Map<string, Consumer>();
     private _connected: boolean;
+    private _messageStoreQ: MsgStore[] = [];
 
     constructor(@inject(TYPES.ConfigManager) private _configManager: BaseConfigManager,
-                @inject(TYPES.DatabaseService) private _databaseService: BaseDatabaseService,
                 @inject(TYPES.Sentry) private _sentry: Sentry) {
     }
 
@@ -100,7 +99,7 @@ export class AmqplibImpl implements RabbitMQService {
         }, 5000);
     };
 
-    public async initPublisher(exchangeName: string, exchangeType: string): Promise<void> {
+    public async initPublisher(exchangeName: string, exchangeType: string, routingKey?: string): Promise<void> {
         const channel = await this.addChannel(exchangeName, exchangeType);
         await channel.assertExchange(exchangeName, exchangeType);
     }
@@ -138,10 +137,7 @@ export class AmqplibImpl implements RabbitMQService {
                             if (err !== null) {
                                 // TODO: currently not reachable, need to figure out how to test this piece of code.
                                 logger.warn('message nacked');
-                                this.saveMessage(exchangeName, routingKey, message)
-                                    .then(() => {
-                                        logger.info('message saved, will be resent')
-                                    });
+                                this.saveMessage(exchangeName, routingKey, message);
                                 reject(err);
                             } else {
                                 resolve(true);
@@ -152,10 +148,8 @@ export class AmqplibImpl implements RabbitMQService {
             } catch (e: any) {
                 logger.error(e, 'exception catch when publish' + JSON.stringify(e.stack));
                 this._sentry.capture(e, {stack: e.stack, line: '143', exchangeName, routingKey, message});
-                return this.saveMessage(exchangeName, routingKey, message)
-                    .then(() => {
-                        return false;
-                    });
+                this.saveMessage(exchangeName, routingKey, message);
+                return Promise.resolve(false);
             }
         }
     }
@@ -201,19 +195,19 @@ export class AmqplibImpl implements RabbitMQService {
         }
     }
 
-    private async saveMessage(exchange: string, routingKey: string, content: any): Promise<void> {
-        const message = new Message();
+    private saveMessage(exchange: string, routingKey: string, content: any): void {
+        const message = {} as MsgStore;
         message.exchange = exchange;
         message.routingKey = routingKey;
         message.content = content;
-        await this._databaseService.getMessageRepository().enqueueMessage(message);
+        this._messageStoreQ.push(message);
     }
 
     private async resendMessageInFailedQueue(): Promise<void> {
         let result: boolean;
-        let message: Message;
+        let message: MsgStore;
         while (result) {
-            message = await this._databaseService.getMessageRepository().dequeueMessage();
+            message = this._messageStoreQ.shift();
             if (message) {
                 try {
                     result = await this.publish(message.exchange, message.routingKey, message.content);
@@ -224,7 +218,7 @@ export class AmqplibImpl implements RabbitMQService {
                     break;
                 }
                 if (!result) {
-                    await this._databaseService.getMessageRepository().enqueueMessage(message);
+                    this._messageStoreQ.unshift(message);
                 }
             }
         }
