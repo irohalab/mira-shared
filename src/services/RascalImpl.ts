@@ -35,20 +35,40 @@ export class RascalImpl implements RabbitMQService {
 
     constructor(@inject(TYPES.ConfigManager) private _config: BaseConfigManager,
                 @inject(TYPES.Sentry) private _sentry: Sentry) {
-        this._vhost = getVhostFromUrl(this._config.amqpServerUrl());
+        if (this._config.amqpServerUrl()) {
+            this._vhost = getVhostFromUrl(this._config.amqpServerUrl());
+        } else {
+            this._vhost = this._config.amqpConfig().vhost;
+        }
+
         this._brokerConfig = {
             vhosts: {
                 [this._vhost]: {
-                    connection: {
-                        url: this._config.amqpServerUrl()
-                    },
                     exchanges: {},
                     queues: {},
+                    bindings: {},
                     publications: {},
                     subscriptions: {}
                 }
             }
         };
+
+        if (this._config.amqpServerUrl()) {
+            this._brokerConfig.vhosts[this._vhost]['connection'] = { url: this._config.amqpServerUrl() };
+        } else {
+            const amqpConfig = this._config.amqpConfig();
+            this._brokerConfig.vhosts[this._vhost]['connection'] = {
+                protocol: 'amqp',
+                hostname: amqpConfig.hostname,
+                user: amqpConfig.username,
+                password: amqpConfig.password,
+                port: amqpConfig.port,
+                vhost: amqpConfig.vhost,
+                options: {
+                    heartbeat: amqpConfig.heartbeat
+                }
+            }
+        }
     }
 
     private async createBroker(): Promise<void> {
@@ -69,7 +89,7 @@ export class RascalImpl implements RabbitMQService {
                 if (await onMessage(content as MQMessage)) {
                     ackOrNackFn();
                 } else {
-                    ackOrNackFn(new Error('Nack-ed by consumer'));
+                    ackOrNackFn(new Error('Nack-ed by consumer'), { strategy: 'nack', defer: 1000, requeue: true});
                 }
             });
             subscription.on('error', (error) => {
@@ -86,9 +106,15 @@ export class RascalImpl implements RabbitMQService {
     public initConsumer(exchangeName: string, exchangeType: string, queueName: string, bindingKey?: string, prefetch?: boolean): Promise<void> {
         this.ensureExchange(exchangeName, exchangeType);
         this._brokerConfig.vhosts[this._vhost].queues[queueName] = {
-            assert: false,
-            check: true
+            assert: true,
+            check: false
         }
+        this._brokerConfig.vhosts[this._vhost].bindings[RascalImpl.getBindingName(exchangeName, queueName, bindingKey)] = {
+            source: exchangeName,
+            destination: queueName,
+            destinationType: 'queue',
+            bindingKeys: [bindingKey]
+        };
         this._brokerConfig.vhosts[this._vhost].subscriptions[queueName] = {
             queue: queueName,
             contentType: 'application/json',
@@ -97,13 +123,13 @@ export class RascalImpl implements RabbitMQService {
         return Promise.resolve(undefined);
     }
 
-    public initPublisher(exchangeName: string, exchangeType: string): Promise<void> {
+    public initPublisher(exchangeName: string, exchangeType: string, routingKey?: string): Promise<void> {
         this.ensureExchange(exchangeName, exchangeType);
+        this.preparePublisher(exchangeName, routingKey);
         return Promise.resolve(undefined);
     }
 
     public async publish(exchangeName: string, routingKey: string, message: any): Promise<boolean> {
-        this.preparePublisher(exchangeName, routingKey);
         if (!this._broker) {
             await this.createBroker();
         }
@@ -136,12 +162,18 @@ export class RascalImpl implements RabbitMQService {
         return routingKey ? exchangeName + '_' + routingKey: exchangeName;
     }
 
+    private static getBindingName(exchangeName: string, queueName: string, bindingKey: string): string {
+        return exchangeName + '_' + queueName + '_' + bindingKey;
+    }
+
     private ensureExchange(exchangeName: string, exchangeType: string): void {
-        this._brokerConfig.vhosts[this._vhost].exchanges[exchangeName] = {
-            type: exchangeType,
-            assert: false,
-            check: true
-        };
+        if (!this._brokerConfig.vhosts[this._vhost].exchanges[exchangeName]) {
+            this._brokerConfig.vhosts[this._vhost].exchanges[exchangeName] = {
+                type: exchangeType,
+                assert: true,
+                check: false
+            };
+        }
     }
 
     private preparePublisher(exchangeName: string, bindingKey: string): void {
