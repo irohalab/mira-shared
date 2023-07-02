@@ -16,6 +16,7 @@
 
 import { MQMessage } from './MQMessage';
 import { RemoteFile } from './RemoteFile';
+import { FileMapping } from './FileMapping';
 
 /**
  * Download Manager publish DownloadMQMessage once a download task is completed.
@@ -27,8 +28,9 @@ export class DownloadMQMessage implements MQMessage {
     public bangumiId: string;
     public downloadTaskId: string;
     public videoId: string;
-    public downloadManagerId: string; // can used to determine whether to use uri or local path to retrieve the video file.
+    public downloadManagerId: string; // can be used to determine whether to use uri or local path to retrieve the video file.
     public videoFile: RemoteFile;
     public otherFiles: RemoteFile[]; // other files in the same download task.
+    public fileMapping: FileMapping;
     public version: string;
 }
