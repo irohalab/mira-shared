@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 IROHA LAB
+ * Copyright 2022 IROHA LAB
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,18 +14,15 @@
  * limitations under the License.
  */
 
-import { MQMessage } from './MQMessage';
 import { RemoteFile } from './RemoteFile';
-import { VideoMetadata } from './VideoMetadata';
 
-export class VideoManagerMessage implements MQMessage {
-    public id: string;
-    public isProcessed: boolean; // if there is no rule match, this is false
-    public processedFiles: RemoteFile[]; // can be null
-    public metadata: { processedFileLocalPath: string, metadata: VideoMetadata }[];
-    public jobExecutorId: string;
-    public bangumiId: string;
-    public videoId: string;
-    public version = '3';
-    public downloadTaskId: string;
-}
+export type VideoMetadata = {
+    width: number;
+    height: number;
+    duration: number; // milliseconds
+    dominantColorOfThumbnail: string;
+    thumbnailPath: RemoteFile;
+    keyframeImagePath: RemoteFile;
+    frameSize: number;
+    tileSize: number;
+};
