@@ -22,7 +22,7 @@ export class VideoManagerMessage implements MQMessage {
     public id: string;
     public isProcessed: boolean; // if there is no rule match, this is false
     public processedFiles: RemoteFile[]; // can be null
-    public metadata: { processedFileLocalPath: string, metadata: VideoMetadata }[];
+    public metadata: VideoMetadata;
     public jobExecutorId: string;
     public bangumiId: string;
     public videoId: string;
