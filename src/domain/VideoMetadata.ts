@@ -22,7 +22,8 @@ export type VideoMetadata = {
     duration: number; // milliseconds
     dominantColorOfThumbnail: string;
     thumbnailPath: RemoteFile;
-    keyframeImagePath: RemoteFile;
-    frameSize: number;
+    keyframeImagePathList: RemoteFile[];
+    frameWidth: number;
+    frameHeight: number;
     tileSize: number;
 };
