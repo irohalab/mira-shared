@@ -21,6 +21,9 @@ export type ORMConfig = {
     user: string;
     password: string;
     dbName: string;
+    driverOptions: {
+        ssl: { ca: string } | boolean
+    };
     entities: string[];
     entitiesTs: string[];
 };
