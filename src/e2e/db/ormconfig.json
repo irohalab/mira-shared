@@ -1,0 +1,18 @@
+{
+   "host": "localhost",
+   "port": 5432,
+   "user": "postgres",
+   "password": "123456",
+   "dbName": "mira_shared",
+   "driverOptions": {
+      "connection": {
+         "ssl": false
+      }
+   },
+   "entities": [
+      "dist/e2e/db/entity/*.js"
+   ],
+   "entitiesTs": [
+      "src/e2e/db/entity/*.ts"
+   ]
+}
