@@ -13,9 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-import { EntityRepository } from '@mikro-orm/postgresql';
 import { Book } from '../entity/Book';
+import { EntityRepository } from '@mikro-orm/postgresql';
 
 export class BookRepository extends EntityRepository<Book> {
     public save(book: Book): void {

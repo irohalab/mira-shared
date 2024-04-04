@@ -14,29 +14,25 @@
  * limitations under the License.
  */
 
-import { BasicDatabaseServiceImpl } from '../../services/BasicDatabaseServiceImpl';
+import { DbService } from './DbService';
+import { injectable } from 'inversify';
 import { BookRepository } from './repo/BookRepository';
 import { Book } from './entity/Book';
-import { injectable } from 'inversify';
+import { CreateRequestContext, EnsureRequestContext } from '@mikro-orm/core';
 import { EntityManager } from '@mikro-orm/postgresql';
 
 @injectable()
-export class DbService extends BasicDatabaseServiceImpl {
-
-    private _bookRepo: BookRepository;
-
-    public async initSchema(): Promise<void> {
-        await this._em.execute('CREATE EXTENSION IF NOT EXISTS "uuid-ossp";');
-        await this.syncSchema();
+export class BookShelfService {
+    constructor(private em: EntityManager,
+                private dbService: DbService) {
     }
-    public getBookRepo(em?: EntityManager): BookRepository {
-        if (em) {
-            return em.getRepository(Book);
-        }
-        if (!this._bookRepo) {
-            this._bookRepo = this._em.fork().getRepository(Book);
 
-        }
-        return this._bookRepo;
+    public async addBooks(): Promise<void> {
+
+    }
+
+    @EnsureRequestContext<BookShelfService>(t => t.em)
+    public async listBooks(): Promise<Book[]> {
+        return await this.dbService.getBookRepo(this.em).findAll();
     }
 }
