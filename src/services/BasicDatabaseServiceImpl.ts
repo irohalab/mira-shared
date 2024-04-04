@@ -20,8 +20,9 @@ import { BaseConfigManager } from '../utils/BaseConfigManager';
 import { TYPES } from '../TYPES';
 import { promisify } from 'util';
 import pino from 'pino';
-import { MikroORM, RequestContext } from '@mikro-orm/core';
-import type { EntityManager, PostgreSqlDriver } from '@mikro-orm/postgresql';
+import { RequestContext } from '@mikro-orm/core';
+import { MikroORM } from '@mikro-orm/postgresql';
+import type { EntityManager, PostgreSqlDriver, SqlEntityManager } from '@mikro-orm/postgresql';
 import { NextFunction, Request, Response } from 'express';
 
 const RETRY_DELAY = 5000;
@@ -32,7 +33,7 @@ const logger = pino();
 
 @injectable()
 export class BasicDatabaseServiceImpl implements BaseDatabaseService {
-    protected _ormHelper: MikroORM<PostgreSqlDriver>;
+    protected _ormHelper: MikroORM<SqlEntityManager<PostgreSqlDriver>>;
     protected _em: EntityManager;
     protected _retryCount: number = 0;
 

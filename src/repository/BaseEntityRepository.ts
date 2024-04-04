@@ -23,7 +23,7 @@ export abstract class BaseEntityRepository<E extends object> extends EntityRepos
         } else {
             entities = this.create(entities as E);
         }
-        await this.persist(entities).flush();
+        await this.em.persist(entities).flush();
         return entities;
     }
 }

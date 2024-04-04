@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 IROHA LAB
+ * Copyright 2022 IROHA LAB
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,15 +14,21 @@
  * limitations under the License.
  */
 
-import { Options } from 'amqplib';
-import { MikroORMOptions } from '@mikro-orm/core';
-import { EntityManager, PostgreSqlDriver } from '@mikro-orm/postgresql';
+import { Entity, EntityRepositoryType, PrimaryKey, Property } from '@mikro-orm/core';
+import { BookRepository } from '../repo/BookRepository';
 
-/**
- * A base interface for consume project to extend
- */
-export interface BaseConfigManager {
-    amqpConfig(): Options.Connect;
-    amqpServerUrl(): string;
-    databaseConfig(): MikroORMOptions<PostgreSqlDriver, EntityManager<PostgreSqlDriver>>;
+@Entity({repository: () => BookRepository})
+export class Book {
+    @PrimaryKey({type: 'uuid', defaultRaw: 'uuid_generate_v4()'})
+    public id: string;
+
+    @Property({
+        unique: true
+    })
+    public isbn: string;
+
+    @Property()
+    public name: string;
+
+    [EntityRepositoryType]?: BookRepository;
 }

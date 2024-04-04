@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 IROHA LAB
+ * Copyright 2022 IROHA LAB
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,16 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { Book } from '../entity/Book';
+import { EntityRepository } from '@mikro-orm/postgresql';
 
-import { Options } from 'amqplib';
-import { MikroORMOptions } from '@mikro-orm/core';
-import { EntityManager, PostgreSqlDriver } from '@mikro-orm/postgresql';
+export class BookRepository extends EntityRepository<Book> {
+    public save(book: Book): void {
+        this.em.persist(book);
+    }
 
-/**
- * A base interface for consume project to extend
- */
-export interface BaseConfigManager {
-    amqpConfig(): Options.Connect;
-    amqpServerUrl(): string;
-    databaseConfig(): MikroORMOptions<PostgreSqlDriver, EntityManager<PostgreSqlDriver>>;
+    public flush(): Promise<void> {
+        return this.em.flush();
+    }
 }

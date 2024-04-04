@@ -19,7 +19,7 @@ import { Options } from 'amqplib';
 import { injectable } from 'inversify';
 import { NotImplementException } from '../exceptions/NotImplementException';
 import { MikroORMOptions } from '@mikro-orm/core';
-import { PostgreSqlDriver } from '@mikro-orm/postgresql';
+import { EntityManager, PostgreSqlDriver } from '@mikro-orm/postgresql';
 
 @injectable()
 export class FakeConfigManager implements BaseConfigManager {
@@ -45,7 +45,7 @@ export class FakeConfigManager implements BaseConfigManager {
         return process.env.AMQP_URL;
     }
 
-    public databaseConfig(): MikroORMOptions<PostgreSqlDriver> {
+    public databaseConfig(): MikroORMOptions<PostgreSqlDriver, EntityManager<PostgreSqlDriver>> {
         throw new NotImplementException();
     }
 }
