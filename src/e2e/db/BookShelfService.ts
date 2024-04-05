@@ -18,21 +18,23 @@ import { DbService } from './DbService';
 import { injectable } from 'inversify';
 import { BookRepository } from './repo/BookRepository';
 import { Book } from './entity/Book';
-import { CreateRequestContext, EnsureRequestContext } from '@mikro-orm/core';
-import { EntityManager } from '@mikro-orm/postgresql';
+import { EnsureRequestContext } from '@mikro-orm/core';
 
 @injectable()
 export class BookShelfService {
-    constructor(private em: EntityManager,
-                private dbService: DbService) {
+
+    private bookRepo: BookRepository;
+
+    constructor(private dbService: DbService) {
+        this.bookRepo = dbService.getBookRepo();
     }
 
     public async addBooks(): Promise<void> {
 
     }
 
-    @EnsureRequestContext<BookShelfService>(t => t.em)
+    @EnsureRequestContext<BookShelfService>(t => t.bookRepo)
     public async listBooks(): Promise<Book[]> {
-        return await this.dbService.getBookRepo(this.em).findAll();
+        return await this.bookRepo.findAll();
     }
 }

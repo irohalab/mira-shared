@@ -34,7 +34,7 @@ export class DbService extends BasicDatabaseServiceImpl {
             return em.getRepository(Book);
         }
         if (!this._bookRepo) {
-            this._bookRepo = this._em.fork().getRepository(Book);
+            this._bookRepo = this._em.fork({useContext: true}).getRepository(Book);
 
         }
         return this._bookRepo;
