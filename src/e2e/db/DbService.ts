@@ -24,6 +24,18 @@ import { EntityManager } from '@mikro-orm/postgresql';
 export class DbService extends BasicDatabaseServiceImpl {
 
     private _bookRepo: BookRepository;
+    private emWithoutContext: EntityManager;
+
+    public getEntityManager(useContext: boolean): EntityManager {
+        if (useContext) {
+            return this._em;
+        } else {
+            if (!this.emWithoutContext) {
+                this.emWithoutContext = this._em.fork({useContext: false});
+            }
+            return this.emWithoutContext
+        }
+    }
 
     public async initSchema(): Promise<void> {
         await this._em.execute('CREATE EXTENSION IF NOT EXISTS "uuid-ossp";');

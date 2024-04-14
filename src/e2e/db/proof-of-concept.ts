@@ -20,31 +20,37 @@ import { BaseConfigManager, BaseDatabaseService, BasicDatabaseServiceImpl, TYPES
 import { ConfigManager } from './ConfigManager';
 import { DbService } from './DbService';
 import { Book } from './entity/Book';
+import { BookShelfService } from './BookShelfService';
 
 const container = new Container();
 
 container.bind<BaseConfigManager>(TYPES.ConfigManager).to(ConfigManager);
 container.bind<DbService>(TYPES.DatabaseService).to(DbService);
+container.bind<BookShelfService>(BookShelfService).toSelf().inSingletonScope();
 
 const databaseService = container.get<DbService>(TYPES.DatabaseService);
 
 databaseService.start()
-.then(() => {
-    return databaseService.initSchema();
-})
-.then(async () => {
-    const repo = databaseService.getBookRepo();
-    const book1 = new Book();
-    book1.isbn = '1bc';
-    book1.name = 'Abc'
-    repo.save(book1);
-    await repo.flush();
-    const book2 = new Book();
-    book2.isbn = '1bc';
-    book2.name = 'BCD';
-    repo.save(book2);
-    await repo.flush();
-})
-.catch((e) => {
-    console.error(e);
-})
+    .then(() => {
+        return databaseService.initSchema();
+    })
+    .then(() => {
+        const bookshelf = container.get(BookShelfService);
+        return bookshelf.listBooks();
+    })
+    .then(async () => {
+        const repo = databaseService.getBookRepo();
+        const book1 = new Book();
+        book1.isbn = '1bc';
+        book1.name = 'Abc'
+        repo.save(book1);
+        await repo.flush();
+        const book2 = new Book();
+        book2.isbn = '1bc';
+        book2.name = 'BCD';
+        repo.save(book2);
+        await repo.flush();
+    })
+    .catch((e) => {
+        console.error(e);
+    })

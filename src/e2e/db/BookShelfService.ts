@@ -15,26 +15,28 @@
  */
 
 import { DbService } from './DbService';
-import { injectable } from 'inversify';
+import { inject, injectable } from 'inversify';
 import { BookRepository } from './repo/BookRepository';
 import { Book } from './entity/Book';
-import { EnsureRequestContext } from '@mikro-orm/core';
+import { CreateRequestContext, EnsureRequestContext } from '@mikro-orm/core';
+import { TYPES } from '../../TYPES';
 
 @injectable()
 export class BookShelfService {
 
-    private bookRepo: BookRepository;
+    // private bookRepo: BookRepository;
 
-    constructor(private dbService: DbService) {
-        this.bookRepo = dbService.getBookRepo();
+    constructor(@inject(TYPES.DatabaseService) private dbService: DbService) {
+        // this.bookRepo = dbService.getBookRepo();
     }
 
     public async addBooks(): Promise<void> {
 
     }
 
-    @EnsureRequestContext<BookShelfService>(t => t.bookRepo)
+    @CreateRequestContext<BookShelfService>(t => t.dbService.getEntityManager(true))
     public async listBooks(): Promise<Book[]> {
-        return await this.bookRepo.findAll();
+        const bookRepo = this.dbService.getBookRepo();
+        return await bookRepo.findAll();
     }
 }
