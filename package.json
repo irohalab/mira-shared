@@ -16,7 +16,7 @@
    "author": "Everett Summer",
    "license": "Apache-2.0",
    "dependencies": {
-      "@cloudamqp/amqp-client": "^3.1.1",
+      "@cloudamqp/amqp-client": "^3.2.1",
       "@mikro-orm/core": "^6.4.16",
       "@mikro-orm/postgresql": "^6.4.16",
       "@sentry/node": "^7.0.0",
@@ -32,10 +32,10 @@
       "uuid": "^9.0.1"
    },
    "devDependencies": {
-      "@mikro-orm/migrations": "^6.3.7",
+      "@mikro-orm/migrations": "^6.4.16",
       "@types/amqplib": "^0.10.5",
       "@types/express": "^4.17.21",
-      "@types/node": "^20.12.2",
+      "@types/node": "^24.1.0",
       "@types/rascal": "^10.2.1",
       "@types/supertest": "^2.0.16",
       "ava": "^6.1.2",
