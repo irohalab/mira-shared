@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { JsonResult } from 'inversify-express-utils/lib/results';
 import { IHttpActionResult } from 'inversify-express-utils';
+import { JsonResult } from 'inversify-express-utils/lib/cjs/results';
 
 export function JsonResultFactory(status: number, json?: any): IHttpActionResult {
     switch (status) {
