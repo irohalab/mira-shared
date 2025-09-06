@@ -68,7 +68,7 @@ test('fair dispatch', async (t) => {
     const FAIR_DISPATCH_EX = 'fair_dispatch_ex';
     const FAIR_DISPATCH_QUEUE = 'fair_dispatch_queue';
     await rabbitMQService.initPublisher(FAIR_DISPATCH_QUEUE, 'direct');
-    await rabbitMQService.initConsumer(FAIR_DISPATCH_EX, 'direct', FAIR_DISPATCH_QUEUE, '', true);
+    await rabbitMQService.initConsumer(FAIR_DISPATCH_EX, 'direct', FAIR_DISPATCH_QUEUE, '', 1);
 
     const jobMsg = new JobMessage();
     jobMsg.id = uuid4();
