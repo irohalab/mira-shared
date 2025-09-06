@@ -18,7 +18,7 @@ import { MQMessage } from '../domain/MQMessage';
 
 export interface RabbitMQService {
     initPublisher(exchangeName: string, exchangeType: string, routingKey?: string): Promise<void>;
-    initConsumer(exchangeName: string, exchangeType: string, queueName: string, bindingKey?: string, prefetch?: boolean): Promise<void>;
+    initConsumer(exchangeName: string, exchangeType: string, queueName: string, bindingKey?: string, prefetch?: number): Promise<void>;
     publish(exchangeName: string, routingKey: string, message: any): Promise<boolean>;
     consume(queueName: string, onMessage: (msg: MQMessage) => Promise<boolean>): Promise<string>;
 }

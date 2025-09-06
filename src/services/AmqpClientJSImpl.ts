@@ -39,7 +39,7 @@ interface QueueSetting {
     bindingKey: string;
     exchangeName: string;
     exchangeType: string;
-    prefetch: boolean;
+    prefetch: number;
     queueInstance: AMQPQueue;
 }
 
@@ -143,7 +143,7 @@ export class AmqpClientJSImpl implements RabbitMQService {
                         await amqpMessage.ack();
                     }
                 } catch (err) {
-                    // this should not be enter
+                    // this should not be entered
                     logger.error(err);
                     this._sentry.capture(err);
                 }
@@ -155,7 +155,7 @@ export class AmqpClientJSImpl implements RabbitMQService {
         }
     }
 
-    public async initConsumer(exchangeName: string, exchangeType: string, queueName: string, bindingKey: string, prefetch: boolean): Promise<void> {
+    public async initConsumer(exchangeName: string, exchangeType: string, queueName: string, bindingKey: string, prefetch = 1): Promise<void> {
         // init a queue
         if (!this._consumerConnection || this._consumerConnection.closed) {
             await this.connect(false);

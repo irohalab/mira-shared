@@ -32,7 +32,7 @@ const CHECK_INTERVAL = 5000;
 interface QueueSetting {
     bindingKey: string;
     exchangeName: string;
-    prefetch: boolean;
+    prefetch: number;
 }
 
 interface Consumer {
@@ -112,12 +112,12 @@ export class AmqplibImpl implements RabbitMQService {
      * @param bindingKey
      * @param prefetch, see Fair dispatch in the tutorial (https://www.rabbitmq.com/tutorials/tutorial-two-javascript.html)
      */
-    public async initConsumer(exchangeName: string, exchangeType: string, queueName: string, bindingKey: string = '', prefetch = false): Promise<void> {
+    public async initConsumer(exchangeName: string, exchangeType: string, queueName: string, bindingKey: string = '', prefetch = 1): Promise<void> {
         const channel = await this.addChannel(exchangeName, exchangeType);
         await channel.assertExchange(exchangeName, exchangeType);
         const q = await channel.assertQueue(queueName);
         if (prefetch) {
-            await channel.prefetch(1);
+            await channel.prefetch(prefetch);
         }
         await channel.bindQueue(q.queue, exchangeName, bindingKey);
         this._queues.set(queueName, {bindingKey, exchangeName, prefetch});
