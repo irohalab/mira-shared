@@ -1,6 +1,6 @@
 {
    "name": "@irohalab/mira-shared",
-   "version": "5.1.2",
+   "version": "5.2.0",
    "description": "Shared components for mira projects",
    "main": "index.js",
    "typings": "./index.d.ts",
@@ -17,7 +17,7 @@
       "@cloudamqp/amqp-client": "^3.2.1",
       "@mikro-orm/core": "^6.6.10",
       "@mikro-orm/postgresql": "^6.6.10",
-      "@sentry/node": "^7.0.0",
+      "@sentry/node": "^10.55.0",
       "amqplib": "^0.10.9",
       "inversify": "^6.0.3",
       "inversify-binding-decorators": "^4.0.0",

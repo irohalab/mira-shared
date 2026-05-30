@@ -27,12 +27,19 @@ const DSN = process.env.SENTRY_DSN;
 @injectable()
 export class SentryImpl implements Sentry {
 
+    /**
+     * Run this before all imports if you want to use features like tracing or profiling.
+     * @param serverName 
+     * @param appName 
+     * @param version 
+     */
     public setup(serverName: string, appName: string, version: string): void {
         if (DSN) {
             init({
                 dsn: DSN,
                 release: `${appName}@v${version}`,
-                serverName
+                serverName,
+                maxValueLength: 3000
             });
         }
     }
