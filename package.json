@@ -15,8 +15,8 @@
    "license": "Apache-2.0",
    "dependencies": {
       "@cloudamqp/amqp-client": "^3.2.1",
-      "@mikro-orm/core": "^6.6.10",
-      "@mikro-orm/postgresql": "^6.6.10",
+      "@mikro-orm/core": "^6.6.13",
+      "@mikro-orm/postgresql": "^6.6.13",
       "@sentry/node": "^10.55.0",
       "amqplib": "^0.10.9",
       "inversify": "^6.0.3",
@@ -25,9 +25,8 @@
       "inversify-logger-middleware": "^3.1.0",
       "pg": "^8.12.0",
       "pino": "^8.19.0",
-      "rascal": "^20.1.1",
-      "reflect-metadata": "^0.2.2",
-      "uuid": "^9.0.1"
+      "rascal": "^21.0.1",
+      "reflect-metadata": "^0.2.2"
    },
    "devDependencies": {
       "@mikro-orm/migrations": "^6.6.10",
@@ -36,7 +35,6 @@
       "@types/node": "^24.1.0",
       "@types/rascal": "^10.2.1",
       "@types/supertest": "^2.0.16",
-      "ava": "^6.1.2",
       "cross-env": "^7.0.3",
       "rimraf": "^5.0.5",
       "supertest": "^6.3.4",
@@ -46,18 +44,6 @@
    },
    "engines": {
       "node": ">=20.0.0"
-   },
-   "ava": {
-      "extensions": [
-         "ts"
-      ],
-      "files": [
-         "src/services/*.spec.ts"
-      ],
-      "require": [
-         "ts-node/register"
-      ],
-      "verbose": true
    },
    "publishConfig": {
       "access": "public",
